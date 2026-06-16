@@ -1,0 +1,62 @@
+<app-header />
+
+<div class="auth-page">
+  <div class="auth-container">
+    <div class="auth-card">
+      <div class="auth-card__logo">
+        <span>🖥️</span>
+        <h1><strong>Soft</strong>Corp</h1>
+      </div>
+
+      <h2 class="auth-card__title">Iniciar sesion</h2>
+      <p class="auth-card__subtitle">Ingresa tus credenciales para continuar</p>
+
+      <div class="alert alert--error" *ngIf="errorMessage">{{ errorMessage }}</div>
+
+      <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="auth-form">
+
+        <div class="form-group">
+          <label for="correo">Correo electronico</label>
+          <input
+            id="correo"
+            type="email"
+            formControlName="correo"
+            placeholder="tu@email.com"
+            [class.input--error]="correo?.invalid && correo?.touched"
+          />
+          <span class="field-error" *ngIf="correo?.invalid && correo?.touched">
+            Ingresa un email valido.
+          </span>
+        </div>
+
+        <div class="form-group">
+          <label for="password">Contrasena</label>
+          <input
+            id="password"
+            type="password"
+            formControlName="password"
+            placeholder="••••••••"
+            [class.input--error]="password?.invalid && password?.touched"
+          />
+          <span class="field-error" *ngIf="password?.invalid && password?.touched">
+            Ingresa tu contrasena.
+          </span>
+        </div>
+
+        <div class="auth-form__actions">
+          <a routerLink="/" class="btn btn--outline">← Volver</a>
+          <button type="submit" class="btn btn--primary btn--full" [disabled]="isLoading">
+            {{ isLoading ? 'Ingresando...' : 'Entrar' }}
+          </button>
+        </div>
+
+      </form>
+
+      <p class="auth-card__footer">
+        ¿Necesitas acceso? Contacta al administrador del sistema.
+      </p>
+    </div>
+  </div>
+</div>
+
+<app-footer />

@@ -1,0 +1,130 @@
+<div class="mant">
+  <div class="mant__header">
+    <div>
+      <h1>🔐 Mantenimiento</h1>
+      <p>Gestión de usuarios del sistema — solo accesible para el Jefe.</p>
+    </div>
+    <div class="filter-group">
+      <label>🔍 Buscar:</label>
+      <input
+        type="text"
+        [(ngModel)]="filtroBusqueda"
+        placeholder="Nombre, correo o rol..."
+        class="filter-input"
+      />
+      <button class="btn btn--primary" (click)="abrirNuevo()">
+        ➕ Nuevo Usuario
+      </button>
+    </div>
+  </div>
+
+  <div *ngIf="isLoading" class="loading">Cargando usuarios...</div>
+
+  <div *ngIf="!isLoading" class="mant__table-wrap">
+    <table class="mant__table">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Nombre Completo</th>
+          <th>Correo</th>
+          <th>Rol</th>
+          <th>Estado</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let u of usuariosFiltrados; let i = index">
+          <td>{{ i + 1 }}</td>
+          <td>{{ u.nombreCompleto }}</td>
+          <td>{{ u.correo }}</td>
+          <td>
+            <span class="badge" [ngClass]="{
+              'badge--admin':    u.idPerfil === 1,
+              'badge--tecnico':  u.idPerfil === 2,
+              'badge--sistemas': u.idPerfil === 3
+            }">{{ getPerfilDescripcion(u.idPerfil) }}</span>
+          </td>
+          <td>
+            <span class="status" [ngClass]="u.activo ? 'status--active' : 'status--inactive'">
+              {{ u.activo ? 'Activo' : 'Inactivo' }}
+            </span>
+          </td>
+          <td class="mant__actions">
+            <button class="btn btn--sm btn--outline" (click)="abrirEditar(u)">✏️ Editar</button>
+            <button class="btn btn--sm btn--danger" (click)="confirmarEliminar(u)">🗑️ Eliminar</button>
+          </td>
+        </tr>
+        <tr *ngIf="usuariosFiltrados.length === 0">
+          <td colspan="6" style="text-align:center; color:#888; padding:2rem;">No se encontraron usuarios.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- MODAL CREAR / EDITAR -->
+  <div class="mant-modal-overlay" *ngIf="showModal" (click)="cerrarModal()">
+    <div class="mant-modal" (click)="$event.stopPropagation()">
+      <div class="mant-modal__header">
+        <h2>{{ isEditing ? '✏️ Editar Usuario' : '➕ Nuevo Usuario' }}</h2>
+        <button class="mant-modal__close" (click)="cerrarModal()">✕</button>
+      </div>
+      <div class="mant-modal__body">
+        <div *ngIf="formErrors.length > 0" class="alert alert--error">
+          <div *ngFor="let e of formErrors">• {{ e }}</div>
+        </div>
+        <div class="form-group">
+          <label>Nombre Completo *</label>
+          <input type="text" [(ngModel)]="formData.nombreCompleto" placeholder="Ej: Juan Pérez" />
+        </div>
+        <div class="form-group">
+          <label>Correo *</label>
+          <input type="email" [(ngModel)]="formData.correo" placeholder="usuario@softcorp.pe" />
+        </div>
+        <div class="form-group">
+          <label>{{ isEditing ? 'Nueva Contraseña (dejar vacío para no cambiar)' : 'Contraseña *' }}</label>
+          <input type="password" [(ngModel)]="formData.password" placeholder="Contraseña" />
+        </div>
+        <div class="form-group">
+          <label>Teléfono</label>
+          <input type="text" [(ngModel)]="formData.telefono" placeholder="Opcional" />
+        </div>
+        <div class="form-group">
+          <label>Rol *</label>
+          <select [(ngModel)]="formData.idPerfil">
+            <option *ngFor="let r of ROLES" [ngValue]="r.id">{{ r.descripcion }}</option>
+          </select>
+        </div>
+        <div class="form-group form-group--check">
+          <label>
+            <input type="checkbox" [(ngModel)]="formData.activo" />
+            Usuario activo
+          </label>
+        </div>
+      </div>
+      <div class="mant-modal__footer">
+        <button class="btn btn--outline" (click)="cerrarModal()">Cancelar</button>
+        <button class="btn btn--primary" (click)="guardar()">
+          {{ isEditing ? 'Guardar Cambios' : 'Crear Usuario' }}
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL CONFIRMAR ELIMINAR -->
+  <div class="mant-modal-overlay" *ngIf="showDeleteConfirm" (click)="cancelarEliminar()">
+    <div class="mant-modal mant-modal--sm" (click)="$event.stopPropagation()">
+      <div class="mant-modal__header">
+        <h2>⚠️ Confirmar eliminación</h2>
+        <button class="mant-modal__close" (click)="cancelarEliminar()">✕</button>
+      </div>
+      <div class="mant-modal__body">
+        <p>¿Estás seguro de eliminar al usuario <strong>{{ usuarioToDelete?.nombreCompleto }}</strong>?</p>
+        <p style="color:#888; font-size:0.85rem; margin-top:0.5rem;">Esta acción no se puede deshacer.</p>
+      </div>
+      <div class="mant-modal__footer">
+        <button class="btn btn--outline" (click)="cancelarEliminar()">Cancelar</button>
+        <button class="btn btn--danger" (click)="eliminar()">Sí, eliminar</button>
+      </div>
+    </div>
+  </div>
+</div>

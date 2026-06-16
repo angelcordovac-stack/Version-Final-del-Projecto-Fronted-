@@ -1,0 +1,237 @@
+<app-header />
+
+<!-- ====================================================================
+     HERO + SLIDER DE FONDO (4 escenas con contenido distinto)
+     ==================================================================== -->
+<section class="hero-slider">
+  <div class="hero-slider__track">
+    @for (slide of slides; track $index; let i = $index) {
+      <div class="hero-slider__slide" [class.active]="i === currentIndex">
+
+        <img [src]="slide.url" alt="SoftCorp" class="hero-slider__img" />
+        <div class="hero-slider__overlay"></div>
+
+        <div class="hero-slider__content">
+          @switch (slide.type) {
+
+            @case ('hero') {
+              <span class="hero-slider__eyebrow">SOPORTE TECNICO INTEGRAL</span>
+              <h1>Tu equipo falla. Nosotros lo resolvemos.</h1>
+              <p>
+                Reporta el problema de tu PC en segundos. Nuestro equipo de tecnicos
+                lo atiende, lo documenta y te avisa cuando esta listo.
+              </p>
+              <div class="hero-slider__cta">
+                <a routerLink="/login" class="btn btn--primary">Reportar ahora</a>
+                <a routerLink="/" fragment="servicios" class="btn btn--outline">Como funciona</a>
+              </div>
+            }
+
+            @case ('about') {
+              <span class="hero-slider__eyebrow">SIN LLAMADAS, SIN ESPERAS</span>
+              <h1>Registra tu incidencia en 3 pasos</h1>
+              <p>
+                Solo necesitas el codigo de tu equipo y describir el problema.
+                El sistema hace el resto: asigna un tecnico y te mantiene informado.
+              </p>
+              <ul class="hero-slider__list">
+                <li>📋 Sin formularios complicados</li>
+                <li>🔍 Seguimiento en tiempo real</li>
+                <li>✅ Confirmacion cuando este resuelto</li>
+              </ul>
+            }
+
+            @case ('easy') {
+              <span class="hero-slider__eyebrow">RAPIDO Y SENCILLO</span>
+              <h1>Tu tiempo vale. No lo pierdas esperando.</h1>
+              <p>
+                Nada de llamar, esperar en linea o mandar correos que nadie lee.
+                Reporta en segundos y vuelve a trabajar mientras nosotros atendemos tu equipo.
+              </p>
+              <div class="hero-slider__stats">
+                <div class="hero-slider__stat">
+                  <strong>3</strong>
+                  <span>clicks para reportar</span>
+                </div>
+                <div class="hero-slider__stat">
+                  <strong>24h</strong>
+                  <span>tiempo maximo de respuesta</span>
+                </div>
+              </div>
+            }
+
+            @case ('problems') {
+              <span class="hero-slider__eyebrow">TRANSPARENCIA TOTAL</span>
+              <h1>Sabe exactamente que pasa con tu equipo</h1>
+              <p>
+                Consulta el historial completo de tu PC: que fallo, quien lo atendio
+                y como se soluciono. Si ya tuvo muchos problemas, te lo decimos.
+              </p>
+              <div class="hero-slider__cta">
+                <a routerLink="/login" class="btn btn--primary">Ingresar al sistema</a>
+              </div>
+            }
+
+          }
+        </div>
+
+      </div>
+    }
+  </div>
+
+  <!-- Controles -->
+  <button class="hero-slider__btn hero-slider__btn--prev"
+          (click)="prevSlide()" aria-label="Anterior">&#10094;</button>
+  <button class="hero-slider__btn hero-slider__btn--next"
+          (click)="nextSlide()" aria-label="Siguiente">&#10095;</button>
+
+  <!-- Dots -->
+  <div class="hero-slider__dots">
+    @for (s of slides; track $index; let i = $index) {
+      <button class="hero-slider__dot"
+              [class.active]="i === currentIndex"
+              (click)="goToSlide(i)"
+              [attr.aria-label]="'Ir al slide ' + (i + 1)"></button>
+    }
+  </div>
+</section>
+
+
+<!-- ====================================================================
+     COMO FUNCIONA — 6 pasos
+     ==================================================================== -->
+<section id="servicios" class="section section--light">
+  <div class="section__container">
+
+    <div class="section__head">
+      <span class="section__eyebrow">COMO FUNCIONA</span>
+      <h2>Del reporte al cierre en 6 pasos</h2>
+      <p>
+        SoftCorp digitaliza el flujo completo del soporte tecnico,
+        para que ningun pedido se pierda en el camino.
+      </p>
+    </div>
+
+    <div class="ops-grid">
+      @for (op of operaciones; track op.numero) {
+        <article class="op-card">
+          <div class="op-card__img-wrap">
+            <img [src]="op.imagen" [alt]="op.titulo" />
+            <span class="op-card__badge">{{ op.numero }}</span>
+          </div>
+          <div class="op-card__body">
+            <h3>{{ op.titulo }}</h3>
+            <p>{{ op.descripcion }}</p>
+          </div>
+        </article>
+      }
+    </div>
+
+  </div>
+</section>
+
+
+<!-- ====================================================================
+     FUNCIONALIDADES
+     ==================================================================== -->
+<section id="funcionalidades" class="section">
+  <div class="section__container">
+
+    <div class="section__head">
+      <span class="section__eyebrow">QUE OFRECE</span>
+      <h2>Funcionalidades de SoftCorp</h2>
+      <p>Todo lo que tu area de soporte necesita, en una sola plataforma.</p>
+    </div>
+
+    <div class="features-grid">
+      @for (f of funcionalidades; track f.titulo) {
+        <div class="feature-card">
+          <div class="feature-card__icon">{{ f.icono }}</div>
+          <h3>{{ f.titulo }}</h3>
+          <p>{{ f.descripcion }}</p>
+        </div>
+      }
+    </div>
+
+  </div>
+</section>
+
+
+<!-- ====================================================================
+     CTA + ESTADISTICAS
+     ==================================================================== -->
+<section class="cta">
+  <div class="section__container">
+    <div class="cta__grid">
+
+      <div class="cta__text">
+        <h2>Prueba SoftCorp en tu area</h2>
+        <p>
+          Toma el control. Reduce tiempos de respuesta. Documenta cada falla.
+          Es momento de profesionalizar el soporte tecnico.
+        </p>
+        <a routerLink="/login" class="btn btn--primary btn--lg">Iniciar sesion</a>
+      </div>
+
+      <div class="cta__stats">
+        <div class="cta__stat">
+          <strong>+200</strong>
+          <span>Equipos gestionados</span>
+        </div>
+        <div class="cta__stat">
+          <strong>+50</strong>
+          <span>Tecnicos activos</span>
+        </div>
+        <div class="cta__stat">
+          <strong>95%</strong>
+          <span>Incidencias resueltas</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+
+<!-- ====================================================================
+     TESTIMONIOS (con auto-rotacion)
+     ==================================================================== -->
+<section id="testimonios" class="testimonios">
+  <div class="section__container">
+
+    <div class="section__head section__head--light">
+      <span class="section__eyebrow">TESTIMONIOS</span>
+      <h2>Lo que dicen los que ya lo usan</h2>
+    </div>
+
+    <div class="testimonio-slider">
+      @for (t of testimonios; track $index; let i = $index) {
+        <article class="testimonio-card" [class.active]="i === testimonioIndex">
+          <div class="testimonio-card__quote">"</div>
+          <p class="testimonio-card__text">{{ t.texto }}</p>
+          <div class="testimonio-card__author">
+            <strong>{{ t.autor }}</strong>
+            <span>{{ t.cargo }}</span>
+          </div>
+        </article>
+      }
+    </div>
+
+    <div class="testimonio-slider__controls">
+      <button class="testimonio-slider__btn" (click)="prevTestimonio()" aria-label="Anterior">&#10094;</button>
+
+      <div class="testimonio-slider__dots">
+        @for (t of testimonios; track $index; let i = $index) {
+          <button class="testimonio-slider__dot"
+                  [class.active]="i === testimonioIndex"
+                  (click)="goToTestimonio(i)"></button>
+        }
+      </div>
+
+      <button class="testimonio-slider__btn" (click)="nextTestimonio()" aria-label="Siguiente">&#10095;</button>
+    </div>
+
+  </div>
+</section>
+
+<app-footer />

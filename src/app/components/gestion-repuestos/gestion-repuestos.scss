@@ -1,0 +1,433 @@
+
+.rep-page {
+  padding: 0;
+}
+
+/* Breadcrumb */
+.rep-page__breadcrumb {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: #94a3b8;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-bottom: 0.35rem;
+}
+
+/* Top bar */
+.rep-page__top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.rep-page__title {
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: #0f172a;
+  margin: 0;
+}
+
+/* Filter */
+.rep-page__filter {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.85rem;
+  color: #64748b;
+
+  select {
+    padding: 0.4rem 0.75rem;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    background: #fff;
+    font-size: 0.85rem;
+    cursor: pointer;
+    outline: none;
+    &:focus { border-color: #3b82f6; }
+  }
+}
+
+.rep-loading {
+  text-align: center;
+  padding: 3rem;
+  color: #94a3b8;
+}
+
+/* ── Layout principal ── */
+.rep-layout {
+  display: grid;
+  grid-template-columns: 340px 1fr;
+  gap: 1.25rem;
+  align-items: start;
+
+  @media (max-width: 900px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ══════════════════════════════════════════
+   PANEL IZQUIERDO – Formulario
+   ══════════════════════════════════════════ */
+.rep-form-panel {
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+}
+
+.rep-form-panel__title {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-size: 1rem;
+  font-weight: 700;
+  color: #1e293b;
+}
+
+.rep-form-panel__bar {
+  display: inline-block;
+  width: 4px;
+  height: 1.1rem;
+  background: #3b82f6;
+  border-radius: 4px;
+}
+
+.rep-form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+
+  label {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #475569;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+}
+
+.rep-hint {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #e2e8f0;
+  color: #64748b;
+  font-size: 0.65rem;
+  font-weight: 700;
+  cursor: help;
+  margin-left: 2px;
+}
+
+.rep-select {
+  padding: 0.55rem 0.875rem;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 8px;
+  font-size: 0.875rem;
+  color: #334155;
+  background: #fff;
+  outline: none;
+  transition: border-color 0.15s;
+  &:focus { border-color: #3b82f6; }
+}
+
+.rep-textarea {
+  padding: 0.6rem 0.875rem;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 8px;
+  font-size: 0.875rem;
+  color: #334155;
+  font-family: inherit;
+  resize: vertical;
+  outline: none;
+  transition: border-color 0.15s;
+  &:focus { border-color: #3b82f6; }
+  &::placeholder { color: #b0bec5; }
+}
+
+.rep-form-row {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.rep-form-group--qty { flex: 0 0 auto; }
+.rep-form-group--urgency { flex: 1; }
+
+/* Qty stepper */
+.rep-qty {
+  display: inline-flex;
+  align-items: center;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 8px;
+  overflow: hidden;
+  height: 38px;
+}
+
+.rep-qty__btn {
+  width: 32px;
+  height: 100%;
+  background: #f8fafc;
+  border: none;
+  font-size: 1rem;
+  cursor: pointer;
+  color: #475569;
+  transition: background 0.12s;
+  &:hover { background: #e2e8f0; }
+}
+
+.rep-qty__val {
+  min-width: 36px;
+  text-align: center;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #1e293b;
+}
+
+.rep-form-hint {
+  color: #94a3b8;
+  font-size: 0.78rem;
+}
+
+.rep-btn-submit {
+  width: 100%;
+  padding: 0.75rem;
+  background: #1e40af;
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  font-size: 0.9rem;
+  font-weight: 700;
+  cursor: pointer;
+  letter-spacing: 0.02em;
+  transition: background 0.15s;
+  margin-top: 0.25rem;
+  &:hover { background: #1d3498; }
+}
+
+/* ══════════════════════════════════════════
+   PANEL DERECHO – Lista de solicitudes
+   ══════════════════════════════════════════ */
+.rep-list-panel {
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+}
+
+.rep-list-panel__header {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 1rem 1.25rem;
+  border-bottom: 1px solid #f1f5f9;
+  background: #fafbfc;
+}
+
+.rep-list-panel__icon { font-size: 1rem; }
+
+.rep-list-panel__heading {
+  flex: 1;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #1e293b;
+}
+
+.rep-list-panel__inc {
+  font-weight: 400;
+  color: #64748b;
+  font-size: 0.85rem;
+}
+
+.rep-list-panel__actions {
+  display: flex;
+  gap: 0.35rem;
+}
+
+.rep-icon-btn {
+  background: none;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  padding: 0.3rem 0.5rem;
+  font-size: 0.85rem;
+  cursor: pointer;
+  color: #64748b;
+  &:hover { background: #f1f5f9; color: #1e293b; }
+}
+
+/* Columnas cabecera */
+.rep-cols {
+  display: grid;
+  grid-template-columns: 1fr 90px 60px 110px auto;
+  padding: 0.5rem 1.25rem;
+  background: #f8fafc;
+  border-bottom: 1px solid #e2e8f0;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #94a3b8;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+/* Fila de repuesto */
+.rep-item {
+  display: grid;
+  grid-template-columns: 1fr 90px 60px 110px auto;
+  align-items: center;
+  padding: 0.9rem 1.25rem;
+  border-bottom: 1px solid #f1f5f9;
+  transition: background 0.12s;
+
+  &:last-of-type { border-bottom: none; }
+  &:hover { background: #f8fafc; }
+}
+
+.rep-item__info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.rep-item__name {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #1e293b;
+}
+
+.rep-item__meta {
+  font-size: 0.75rem;
+  color: #64748b;
+}
+
+.rep-item__date {
+  font-size: 0.7rem;
+  color: #94a3b8;
+}
+
+.rep-item__code {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: #475569;
+  font-family: monospace;
+}
+
+.rep-item__qty {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #1e293b;
+}
+
+/* Badges de estado */
+.rep-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.25rem 0.6rem;
+  border-radius: 999px;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+
+.rep-badge__dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+}
+
+.rep-badge--solicitado {
+  background: #eff6ff;
+  color: #1d4ed8;
+  .rep-badge__dot { background: #3b82f6; }
+}
+
+.rep-badge--camino {
+  background: #fef3c7;
+  color: #92400e;
+  .rep-badge__dot { background: #f59e0b; }
+}
+
+.rep-badge--entregado {
+  background: #f0fdf4;
+  color: #15803d;
+  .rep-badge__dot { background: #22c55e; }
+}
+
+.rep-item__action {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.rep-btn-entregar {
+  padding: 0.3rem 0.75rem;
+  background: #16a34a;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.12s;
+  white-space: nowrap;
+  &:hover { background: #15803d; }
+}
+
+/* Vacío */
+.rep-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2.5rem;
+  color: #94a3b8;
+  gap: 0.5rem;
+
+  .rep-empty__icon { font-size: 2rem; }
+  p { font-size: 0.85rem; margin: 0; }
+}
+
+/* ── Métricas ── */
+.rep-metrics {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0;
+  border-top: 1px solid #e2e8f0;
+
+  @media (max-width: 700px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.rep-metric {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  padding: 1rem 1.1rem;
+  border-right: 1px solid #e2e8f0;
+  font-size: 0.78rem;
+
+  &:last-child { border-right: none; }
+
+  strong {
+    display: block;
+    font-size: 0.8rem;
+    font-weight: 700;
+    margin-bottom: 0.2rem;
+  }
+
+  p { margin: 0; color: #64748b; line-height: 1.4; }
+}
+
+.rep-metric__icon { font-size: 1.2rem; margin-top: 1px; }
+
+.rep-metric--blue  { background: #eff6ff; strong { color: #1d4ed8; } }
+.rep-metric--orange { background: #fff7ed; strong { color: #9a3412; } }
+.rep-metric--red   { background: #fff1f2; strong { color: #be123c; } }

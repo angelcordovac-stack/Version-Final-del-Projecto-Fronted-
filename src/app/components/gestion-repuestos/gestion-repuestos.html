@@ -1,0 +1,162 @@
+<div class="rep-page">
+
+  <!-- ── CABECERA ── -->
+  <div class="rep-page__top">
+    <h1 class="rep-page__title">📦 Solicitud de Repuestos</h1>
+    <div class="rep-page__filter">
+      <label>Filtrar:</label>
+      <select [(ngModel)]="filtroEstado">
+        <option value="TODOS">Todos</option>
+        <option value="Solicitado">Solicitados</option>
+        <option value="Entregado">Entregados</option>
+      </select>
+    </div>
+  </div>
+
+  <div *ngIf="isLoading" class="rep-loading">Cargando repuestos...</div>
+
+  <div *ngIf="!isLoading" class="rep-layout">
+
+    <!-- ── PANEL IZQUIERDO: FORMULARIO ── -->
+    <div class="rep-form-panel" *ngIf="esTecnico">
+      <div class="rep-form-panel__title">
+        <span class="rep-form-panel__bar"></span>
+        Nueva Solicitud de Inventario
+      </div>
+
+      <div class="rep-form-group">
+        <label>Incidencia <span class="rep-hint">ℹ</span></label>
+        <select [(ngModel)]="formSolicitar.idIncidencia" class="rep-select">
+          <option [ngValue]="null">— Seleccionar incidencia —</option>
+          <option *ngFor="let i of incidencias" [ngValue]="i.idIncidencia">
+            INC-{{ i.idIncidencia }} — {{ i.codigoEquipo }}
+          </option>
+        </select>
+        <small *ngIf="incidencias.length === 0" class="rep-form-hint">
+          No tienes incidencias pendientes asignadas.
+        </small>
+      </div>
+
+      <div class="rep-form-group">
+        <label>Descripción del Repuesto</label>
+        <textarea
+          [(ngModel)]="formSolicitar.descripcion"
+          class="rep-textarea"
+          rows="4"
+          placeholder="Proporcione especificaciones técnicas y números de modelo..."
+        ></textarea>
+      </div>
+
+      <div class="rep-form-row">
+        <div class="rep-form-group rep-form-group--qty">
+          <label>Cantidad</label>
+          <div class="rep-qty">
+            <button class="rep-qty__btn" (click)="decrementarCantidad()">−</button>
+            <span class="rep-qty__val">{{ formSolicitar.cantidad }}</span>
+            <button class="rep-qty__btn" (click)="incrementarCantidad()">+</button>
+          </div>
+        </div>
+        <div class="rep-form-group rep-form-group--urgency">
+          <label>Urgencia</label>
+          <select [(ngModel)]="formSolicitar.urgencia" class="rep-select">
+            <option value="estandar">Entrega Estándar</option>
+            <option value="urgente">Urgente</option>
+            <option value="critica">Crítica</option>
+          </select>
+        </div>
+      </div>
+
+      <button class="rep-btn-submit" (click)="guardarSolicitar()">
+        ▶ Enviar Solicitud
+      </button>
+    </div>
+
+    <!-- ── PANEL DERECHO: LISTA ── -->
+    <div class="rep-list-panel">
+      <div class="rep-list-panel__header">
+        <span class="rep-list-panel__icon">📋</span>
+        <span class="rep-list-panel__heading">
+          Solicitudes Activas
+          <span class="rep-list-panel__inc" *ngIf="formSolicitar.idIncidencia">
+            para el Incidente INC-{{ formSolicitar.idIncidencia }}
+          </span>
+        </span>
+        <div class="rep-list-panel__actions">
+          <button class="rep-icon-btn" title="Filtrar">⚙</button>
+          <button class="rep-icon-btn" title="Recargar" (click)="cargar()">↻</button>
+        </div>
+      </div>
+
+      <!-- Cabecera columnas -->
+      <div class="rep-cols">
+        <span>Info de Pieza</span>
+        <span>Código</span>
+        <span>Cant.</span>
+        <span>Estado</span>
+        <span *ngIf="esJefe || esSistemas">Acción</span>
+      </div>
+
+      <!-- Filas -->
+      <div class="rep-item" *ngFor="let r of repuestosFiltrados">
+        <div class="rep-item__info">
+          <span class="rep-item__name">{{ r.descripcion || '—' }}</span>
+          <span class="rep-item__meta">Incidencia #{{ r.idIncidencia ?? '—' }}</span>
+          <span class="rep-item__date" *ngIf="r.fechaSolicitud">
+            Solicitado: {{ r.fechaSolicitud | date:'short' }}
+          </span>
+        </div>
+        <div class="rep-item__code">REP-{{ r.idRepuesto }}</div>
+        <div class="rep-item__qty">01</div>
+        <div class="rep-item__estado">
+          <span class="rep-badge"
+            [class.rep-badge--solicitado]="r.estado === 'Solicitado'"
+            [class.rep-badge--camino]="r.estado === 'En camino'"
+            [class.rep-badge--entregado]="r.estado === 'Entregado'">
+            <span class="rep-badge__dot"></span>
+            {{ r.estado | uppercase }}
+          </span>
+        </div>
+        <div class="rep-item__action" *ngIf="esJefe || esSistemas">
+          <button
+            *ngIf="r.estado === 'Solicitado'"
+            class="rep-btn-entregar"
+            (click)="entregar(r)">
+            ✓ Entregar
+          </button>
+        </div>
+      </div>
+
+      <!-- Vacío -->
+      <div class="rep-empty" *ngIf="repuestosFiltrados.length === 0">
+        <span class="rep-empty__icon">📭</span>
+        <p>Fin del catálogo activo para esta sesión</p>
+      </div>
+
+      <!-- ── PANELES DE MÉTRICAS (solo jefe/sistemas) ── -->
+      <div class="rep-metrics" *ngIf="esJefe || esSistemas">
+        <div class="rep-metric rep-metric--blue">
+          <span class="rep-metric__icon">📦</span>
+          <div>
+            <strong>Estado de Stock Local</strong>
+            <p>El 85% de los artículos solicitados están disponibles en el centro regional.</p>
+          </div>
+        </div>
+        <div class="rep-metric rep-metric--orange">
+          <span class="rep-metric__icon">⏱</span>
+          <div>
+            <strong>Est. de Resolución</strong>
+            <p>Pendiente de llegada de piezas, ETA para completar reparación: 18h.</p>
+          </div>
+        </div>
+        <div class="rep-metric rep-metric--red">
+          <span class="rep-metric__icon">⚠</span>
+          <div>
+            <strong>Alerta de Presupuesto</strong>
+            <p>El total actual de piezas excede el límite estándar por incidente.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>

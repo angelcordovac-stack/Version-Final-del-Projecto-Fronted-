@@ -1,0 +1,173 @@
+<div class="inc">
+
+  <!-- HEADER -->
+  <div class="inc__header">
+    <div class="inc__header-left">
+      <h1 class="inc__title">Consola de<br>Incidencias</h1>
+      <p class="inc__subtitle" *ngIf="esTecnico">Incidencias asignadas a ti para atender y resolver.</p>
+      <p class="inc__subtitle" *ngIf="esJefe">Supervisión de solicitudes de soporte activas. Monitorea y resuelve cuellos de botella críticos.</p>
+    </div>
+    <div class="inc__header-actions">
+      <button class="btn btn--primary" (click)="abrirCrear()">+ Nueva Incidencia</button>
+    </div>
+  </div>
+
+  <!-- FILTRO + TABLA -->
+  <div class="inc__card">
+
+    <!-- Barra de filtros -->
+    <div class="inc__toolbar">
+      <div class="inc__filter-tabs">
+        <button class="inc__tab" [class.inc__tab--active]="filtroEstado === 'TODAS'"      (click)="filtroEstado = 'TODAS'">Todos</button>
+        <button class="inc__tab" [class.inc__tab--active]="filtroEstado === 'Pendiente'"  (click)="filtroEstado = 'Pendiente'">Pendientes</button>
+        <button class="inc__tab" [class.inc__tab--active]="filtroEstado === 'Solucionado'" (click)="filtroEstado = 'Solucionado'">Solucionadas</button>
+      </div>
+    </div>
+
+    <div *ngIf="isLoading" class="inc__loading">Cargando incidencias...</div>
+
+    <div *ngIf="!isLoading" class="inc__table-wrap">
+      <table class="inc__table">
+        <thead>
+          <tr>
+            <th>CÓDIGO</th>
+            <th>EQUIPO</th>
+            <th>PROBLEMA</th>
+            <th>ESTADO</th>
+            <th>TÉCNICO</th>
+            <th>FECHA</th>
+            <th>ACCIONES</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let i of incidenciasFiltradas">
+            <td class="inc__code">#INC-{{ i.idIncidencia }}</td>
+            <td>{{ i.codigoEquipo || '—' }}</td>
+            <td class="inc__desc">{{ i.descripcionProblema || '—' }}</td>
+            <td>
+              <span class="badge" [ngClass]="getEstadoClass(i.estado || '')">
+                {{ i.estado || '—' }}
+              </span>
+            </td>
+            <td>
+              <span *ngIf="i.idTecnicoAsignado; else sinTecnico" class="inc__tecnico">
+                {{ i.idTecnicoAsignado }}
+              </span>
+              <ng-template #sinTecnico>
+                <span class="inc__unassigned">Sin asignar</span>
+              </ng-template>
+            </td>
+            <td class="inc__fecha">{{ i.fechaRegistro | date:'d MMM yy, h:mm a' }}</td>
+            <td class="inc__actions">
+              <button
+                *ngIf="esTecnico && i.estado === 'Pendiente' && i.idTecnicoAsignado"
+                class="btn btn--sm btn--success"
+                (click)="abrirSolucionar(i)"
+              >✓ Solucionar</button>
+
+              <button
+                *ngIf="esJefe && i.estado === 'Pendiente'"
+                class="btn btn--sm btn--warning"
+                (click)="abrirAsignar(i)"
+              >👤 Asignar</button>
+
+              <span *ngIf="i.estado === 'Solucionado'" class="inc__resolved">✓ Listo</span>
+            </td>
+          </tr>
+          <tr *ngIf="incidenciasFiltradas.length === 0">
+            <td colspan="7" class="inc__empty">No hay incidencias para mostrar.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- MODAL CREAR INCIDENCIA -->
+  <div class="mant-modal-overlay" *ngIf="showCrearModal" (click)="cerrarCrear()">
+    <div class="mant-modal" (click)="$event.stopPropagation()">
+      <div class="mant-modal__header">
+        <h2>+ Nueva Incidencia</h2>
+        <button class="mant-modal__close" (click)="cerrarCrear()">✕</button>
+      </div>
+      <div class="mant-modal__body">
+        <div class="form-group">
+          <label>Equipo *</label>
+          <select [(ngModel)]="nuevaIncidencia.codigoEquipo">
+            <option value="">— Seleccionar equipo —</option>
+            <option *ngFor="let e of equipos" [value]="e.codigoEquipo">
+              {{ e.codigoEquipo }} — {{ e.marcaModelo }} ({{ e.areaUbicacion }})
+            </option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Descripcion del problema *</label>
+          <textarea rows="3" [(ngModel)]="nuevaIncidencia.descripcionProblema"
+                    placeholder="Describe que ocurre..."></textarea>
+        </div>
+      </div>
+      <div class="mant-modal__footer">
+        <button class="btn btn--outline" (click)="cerrarCrear()">Cancelar</button>
+        <button class="btn btn--primary" (click)="guardarCrear()">Registrar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL ASIGNAR TECNICO -->
+  <div class="mant-modal-overlay" *ngIf="showAsignarModal" (click)="cerrarAsignar()">
+    <div class="mant-modal" (click)="$event.stopPropagation()">
+      <div class="mant-modal__header">
+        <h2>👤 Asignar técnico</h2>
+        <button class="mant-modal__close" (click)="cerrarAsignar()">✕</button>
+      </div>
+      <div class="mant-modal__body">
+        <p class="mant-modal__meta">
+          Incidencia #{{ incidenciaParaAsignar?.idIncidencia }} —
+          {{ incidenciaParaAsignar?.codigoEquipo }}
+        </p>
+        <div class="form-group">
+          <label>Selecciona un técnico</label>
+          <select [(ngModel)]="tecnicoSeleccionado">
+            <option [ngValue]="null">— Seleccionar —</option>
+            <option *ngFor="let t of tecnicos"
+                    [ngValue]="t.idUsuario"
+                    [disabled]="!t.disponibilidad">
+              {{ t.nombre }} — {{ t.especialidad || 'General' }}
+              {{ !t.disponibilidad ? '(no disponible)' : '' }}
+            </option>
+          </select>
+        </div>
+        <p *ngIf="tecnicos.length === 0" class="mant-modal__empty">No hay técnicos registrados.</p>
+      </div>
+      <div class="mant-modal__footer">
+        <button class="btn btn--outline" (click)="cerrarAsignar()">Cancelar</button>
+        <button class="btn btn--primary" (click)="confirmarAsignar()">Asignar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL SOLUCIONAR -->
+  <div class="mant-modal-overlay" *ngIf="showSolucionarModal" (click)="cerrarSolucionar()">
+    <div class="mant-modal" (click)="$event.stopPropagation()">
+      <div class="mant-modal__header">
+        <h2>✓ Marcar como solucionada</h2>
+        <button class="mant-modal__close" (click)="cerrarSolucionar()">✕</button>
+      </div>
+      <div class="mant-modal__body">
+        <p class="mant-modal__meta">
+          Incidencia #{{ incidenciaParaSolucionar?.idIncidencia }} —
+          {{ incidenciaParaSolucionar?.codigoEquipo }}
+        </p>
+        <div class="form-group">
+          <label>Tipo de solución aplicada *</label>
+          <textarea rows="3" [(ngModel)]="tipoSolucionInput"
+                    placeholder="Ej: Cambio de fuente de poder, reinstalacion de SO, etc."></textarea>
+        </div>
+      </div>
+      <div class="mant-modal__footer">
+        <button class="btn btn--outline" (click)="cerrarSolucionar()">Cancelar</button>
+        <button class="btn btn--primary" (click)="confirmarSolucionar()">Marcar solucionada</button>
+      </div>
+    </div>
+  </div>
+
+</div>

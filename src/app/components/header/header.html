@@ -1,0 +1,84 @@
+<header class="sc-header">
+  <div class="sc-header__container">
+
+    <!-- Brand / Logo -->
+    <a routerLink="/" class="sc-header__brand">
+      <span class="sc-header__logo-icon">🖥️</span>
+      <span class="sc-header__logo-text">
+        <strong>Soft</strong>Corp
+      </span>
+    </a>
+
+    <!-- Toggle mobile -->
+    <button class="sc-header__toggle"
+            type="button"
+            (click)="menuOpen = !menuOpen"
+            [attr.aria-expanded]="menuOpen"
+            aria-label="Abrir menu">
+      <span></span><span></span><span></span>
+    </button>
+
+    <!-- Nav -->
+    <nav class="sc-header__nav" [class.sc-header__nav--open]="menuOpen">
+      <ul class="sc-header__links">
+        <li>
+          <a routerLink="/"
+             routerLinkActive="sc-header__link--active"
+             [routerLinkActiveOptions]="{ exact: true }"
+             (click)="menuOpen = false">
+            Inicio
+          </a>
+        </li>
+        <li>
+          <a routerLink="/"
+             fragment="servicios"
+             (click)="menuOpen = false">
+            Servicios
+          </a>
+        </li>
+        <li>
+          <a routerLink="/"
+             fragment="funcionalidades"
+             (click)="menuOpen = false">
+            Funcionalidades
+          </a>
+        </li>
+        <li>
+          <a routerLink="/"
+             fragment="testimonios"
+             (click)="menuOpen = false">
+            Testimonios
+          </a>
+        </li>
+      </ul>
+
+      <!-- Bloque derecha: cambia segun haya sesion o no -->
+      <div class="sc-header__right">
+
+        @if (!isLoggedIn()) {
+          <a routerLink="/login"
+             class="sc-header__btn sc-header__btn--primary"
+             (click)="menuOpen = false">
+            Iniciar sesion
+          </a>
+        } @else {
+          <a routerLink="/dashboard"
+             class="sc-header__btn sc-header__btn--outline"
+             (click)="menuOpen = false">
+            Mi panel
+          </a>
+          <span class="sc-header__user">
+            <span class="sc-header__user-avatar">{{ (userName() || 'U')[0] }}</span>
+            <span class="sc-header__user-name">{{ userName() }}</span>
+          </span>
+          <button class="sc-header__btn sc-header__btn--ghost"
+                  (click)="logout(); menuOpen = false">
+            Salir
+          </button>
+        }
+
+      </div>
+    </nav>
+
+  </div>
+</header>
