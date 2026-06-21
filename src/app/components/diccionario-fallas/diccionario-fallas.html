@@ -50,15 +50,20 @@
   <!-- GRID DE CARDS -->
   <div *ngIf="!isLoading" class="dic__grid">
 
-    <div *ngIf="fallas.length === 0" class="dic__empty">
+    <div *ngIf="fallasFiltradas.length === 0 && !busqueda.trim()" class="dic__empty">
       <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
       <p>No hay fallas registradas.</p>
+    </div>
+
+    <div *ngIf="fallasFiltradas.length === 0 && busqueda.trim()" class="dic__empty">
+      <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <p>No se encontraron resultados para "{{ busqueda }}".</p>
     </div>
 
     <div
       class="dic__card"
       [class]="cardAccentClass(f.estado)"
-      *ngFor="let f of fallas; let i = index"
+      *ngFor="let f of fallasFiltradas"
     >
       <div class="dic__card-top">
         <span
@@ -69,7 +74,7 @@
           {{ estadoLabel(f.estado) }}
         </span>
         <div class="dic__card-meta-right">
-          <span class="dic__card-id">ID: KB-{{ (i + 1).toString().padStart(3, '0') }}</span>
+          <span class="dic__card-id">ID: KB-{{ (indiceReal(f) + 1).toString().padStart(3, '0') }}</span>
           <svg class="dic__bookmark" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
         </div>
       </div>
@@ -86,10 +91,52 @@
           {{ f.fecha | date:'mediumDate' }}
         </span>
         <span class="dic__card-date" *ngIf="!f.fecha">—</span>
-        <span class="dic__card-link">Ver documentación →</span>
+        <span class="dic__card-link" (click)="abrirDetalle(f)">Más detalles →</span>
       </div>
     </div>
 
+  </div>
+
+  <!-- MODAL DETALLE DE FALLA -->
+  <div class="mant-modal-overlay" *ngIf="showDetalle && fallaSeleccionada" (click)="cerrarDetalle()">
+    <div class="mant-modal mant-modal--detalle" (click)="$event.stopPropagation()">
+      <div class="mant-modal__header">
+        <h2>Detalle de la solución</h2>
+        <button class="mant-modal__close" (click)="cerrarDetalle()">✕</button>
+      </div>
+      <div class="mant-modal__body">
+        <div class="dic__detalle-top">
+          <span class="dic__badge" [class]="estadoClass(fallaSeleccionada.estado)">
+            <span class="dic__badge-dot"></span>
+            {{ estadoLabel(fallaSeleccionada.estado) }}
+          </span>
+          <span class="dic__card-id">ID: KB-{{ (indiceReal(fallaSeleccionada) + 1).toString().padStart(3, '0') }}</span>
+        </div>
+
+        <h3 class="dic__detalle-titulo">{{ fallaSeleccionada.problemaComun }}</h3>
+
+        <div class="dic__detalle-section">
+          <span class="dic__section-label">SOLUCIÓN DADA</span>
+          <p class="dic__section-text">{{ fallaSeleccionada.solucionSugerida }}</p>
+        </div>
+
+        <div class="dic__detalle-grid">
+          <div class="dic__detalle-item">
+            <span class="dic__section-label">TÉCNICO ASIGNADO</span>
+            <p class="dic__section-text">{{ fallaSeleccionada.nombreAutor || 'No especificado' }}</p>
+          </div>
+          <div class="dic__detalle-item">
+            <span class="dic__section-label">FECHA</span>
+            <p class="dic__section-text">
+              {{ fallaSeleccionada.fecha ? (fallaSeleccionada.fecha | date:'mediumDate') : 'No especificada' }}
+            </p>
+          </div>
+        </div>
+      </div>
+      <div class="mant-modal__footer">
+        <button class="btn btn--outline" (click)="cerrarDetalle()">Cerrar</button>
+      </div>
+    </div>
   </div>
 
   <!-- MODAL NUEVA FALLA -->

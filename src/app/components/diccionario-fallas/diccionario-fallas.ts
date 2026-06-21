@@ -28,6 +28,9 @@ export class DiccionarioFallas implements OnInit {
   guardando = false;
   formData: DiccionarioFalla = this.emptyForm();
 
+  showDetalle = false;
+  fallaSeleccionada: DiccionarioFalla | null = null;
+
   ngOnInit(): void {
     this.rolCodigo = this.session.getInfoSession()?.rol?.codigo ?? '';
     this.cargar();
@@ -47,22 +50,20 @@ export class DiccionarioFallas implements OnInit {
     });
   }
 
+  get fallasFiltradas(): DiccionarioFalla[] {
+    const termino = this.busqueda.trim().toLowerCase();
+    if (!termino) return this.fallas;
+
+    return this.fallas.filter((f) =>
+      f.problemaComun?.toLowerCase().includes(termino) ||
+      f.solucionSugerida?.toLowerCase().includes(termino) ||
+      this.estadoLabel(f.estado).toLowerCase().includes(termino)
+    );
+  }
+
   buscar(): void {
-    if (!this.busqueda.trim()) {
-      this.cargar();
-      return;
-    }
-    this.isLoading = true;
-    this.svc.buscar(this.busqueda).subscribe({
-      next: (data) => {
-        this.fallas = [...(data ?? [])];
-        this.isLoading = false;
-      },
-      error: () => {
-        this.toast.show('Error al buscar.', 'danger');
-        this.isLoading = false;
-      },
-    });
+    // El filtrado ya se aplica en vivo mientras se escribe (ver fallasFiltradas).
+    // Enter / botón solo quitan el foco; no se requiere llamada al backend.
   }
 
   abrirNueva(): void {
@@ -74,6 +75,22 @@ export class DiccionarioFallas implements OnInit {
   cerrarModal(): void {
     this.showModal = false;
     this.guardando = false;
+  }
+
+  abrirDetalle(falla: DiccionarioFalla): void {
+    this.fallaSeleccionada = falla;
+    this.showDetalle = true;
+  }
+
+  cerrarDetalle(): void {
+    this.showDetalle = false;
+    this.fallaSeleccionada = null;
+  }
+
+  // El ID visual (KB-00X) se basa en la posición dentro de la lista completa
+  // de fallas, no en la lista filtrada, para que no cambie al buscar.
+  indiceReal(falla: DiccionarioFalla): number {
+    return this.fallas.indexOf(falla);
   }
 
   guardar(): void {

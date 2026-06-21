@@ -470,3 +470,39 @@
   border: 1.5px solid #e2e8f0;
   &:hover { background: #f8fafc; }
 }
+
+/* ── MODAL DETALLE ────────────────────────────────────── */
+.mant-modal--detalle {
+  max-width: 560px;
+}
+
+.dic__detalle-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.dic__detalle-titulo {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #0f172a;
+  margin: 0;
+}
+
+.dic__detalle-section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.dic__detalle-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.dic__detalle-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}

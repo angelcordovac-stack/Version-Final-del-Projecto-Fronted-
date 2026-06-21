@@ -8,6 +8,7 @@ export interface DiccionarioFalla {
   problemaComun: string;
   solucionSugerida: string;
   idAutor?: number;
+  nombreAutor?: string;
   estado?: string;
   fecha?: string;
   fechaRegistro?: string;
