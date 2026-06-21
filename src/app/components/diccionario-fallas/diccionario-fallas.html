@@ -57,22 +57,16 @@
 
     <div
       class="dic__card"
-      [class.dic__card--accent-red]="i % 4 === 0"
-      [class.dic__card--accent-blue]="i % 4 === 1"
-      [class.dic__card--accent-yellow]="i % 4 === 2"
-      [class.dic__card--accent-green]="i % 4 === 3"
+      [class]="cardAccentClass(f.estado)"
       *ngFor="let f of fallas; let i = index"
     >
       <div class="dic__card-top">
         <span
           class="dic__badge"
-          [class.dic__badge--red]="i % 4 === 0"
-          [class.dic__badge--blue]="i % 4 === 1"
-          [class.dic__badge--yellow]="i % 4 === 2"
-          [class.dic__badge--green]="i % 4 === 3"
+          [class]="estadoClass(f.estado)"
         >
           <span class="dic__badge-dot"></span>
-          {{ i % 4 === 0 ? 'CRÍTICO' : i % 4 === 1 ? 'EN CURSO' : i % 4 === 2 ? 'MANTENIMIENTO' : 'RESUELTO' }}
+          {{ estadoLabel(f.estado) }}
         </span>
         <div class="dic__card-meta-right">
           <span class="dic__card-id">ID: KB-{{ (i + 1).toString().padStart(3, '0') }}</span>
@@ -88,10 +82,10 @@
       </div>
 
       <div class="dic__card-footer">
-        <span class="dic__card-date" *ngIf="f.fechaRegistro">
-          {{ f.fechaRegistro | date:'mediumDate' }}
+        <span class="dic__card-date" *ngIf="f.fecha">
+          {{ f.fecha | date:'mediumDate' }}
         </span>
-        <span class="dic__card-date" *ngIf="!f.fechaRegistro">—</span>
+        <span class="dic__card-date" *ngIf="!f.fecha">—</span>
         <span class="dic__card-link">Ver documentación →</span>
       </div>
     </div>
@@ -121,6 +115,20 @@
             [(ngModel)]="formData.solucionSugerida"
             placeholder="Describe la solución paso a paso..."
           ></textarea>
+        </div>
+        <div class="form-group">
+          <label>Estado *</label>
+          <select [(ngModel)]="formData.estado">
+            <option value="" disabled>Selecciona un estado</option>
+            <option *ngFor="let e of estados" [value]="e.value">{{ e.label }}</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Fecha</label>
+          <input
+            type="date"
+            [(ngModel)]="formData.fecha"
+          />
         </div>
       </div>
       <div class="mant-modal__footer">

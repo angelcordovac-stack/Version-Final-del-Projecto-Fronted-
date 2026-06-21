@@ -1,7 +1,7 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { DiccionarioFallasService, DiccionarioFalla } from '../../services/diccionario-fallas.service';
+import { DiccionarioFallasService, DiccionarioFalla, ESTADOS_FALLA } from '../../services/diccionario-fallas.service';
 import { SessionService } from '../../services/session.service';
 import { ToastService } from '../../services/toast.service';
 
@@ -21,6 +21,8 @@ export class DiccionarioFallas implements OnInit {
   isLoading = true;
   busqueda = '';
   rolCodigo = '';
+
+  estados = ESTADOS_FALLA;
 
   showModal = false;
   guardando = false;
@@ -80,6 +82,10 @@ export class DiccionarioFallas implements OnInit {
       this.toast.show('Completa el problema y la solución.', 'warning');
       return;
     }
+    if (!this.formData.estado) {
+      this.toast.show('Selecciona el estado de la solución.', 'warning');
+      return;
+    }
     this.guardando = true;
     const user = this.session.getInfoSession();
     this.formData.idAutor = user?.idUsuario;
@@ -91,8 +97,9 @@ export class DiccionarioFallas implements OnInit {
         this.cerrarModal();
         this.cargar();
       },
-      error: () => {
-        this.toast.show('Error al registrar la falla.', 'danger');
+      error: (err) => {
+        const msg = err?.error?.error ?? 'Error al registrar la falla.';
+        this.toast.show(msg, 'danger');
         this.guardando = false;
       },
     });
@@ -104,7 +111,31 @@ export class DiccionarioFallas implements OnInit {
 
   get esJefe(): boolean { return this.rolCodigo === 'JEFE'; }
 
+  estadoLabel(estado?: string): string {
+    return this.estados.find((e) => e.value === estado)?.label ?? 'Sin estado';
+  }
+
+  estadoClass(estado?: string): string {
+    switch (estado) {
+      case 'CRITICO': return 'dic__badge--red';
+      case 'EN_CURSO': return 'dic__badge--blue';
+      case 'MANTENIMIENTO': return 'dic__badge--yellow';
+      case 'RESUELTO': return 'dic__badge--green';
+      default: return 'dic__badge--blue';
+    }
+  }
+
+  cardAccentClass(estado?: string): string {
+    switch (estado) {
+      case 'CRITICO': return 'dic__card--accent-red';
+      case 'EN_CURSO': return 'dic__card--accent-blue';
+      case 'MANTENIMIENTO': return 'dic__card--accent-yellow';
+      case 'RESUELTO': return 'dic__card--accent-green';
+      default: return 'dic__card--accent-blue';
+    }
+  }
+
   private emptyForm(): DiccionarioFalla {
-    return { problemaComun: '', solucionSugerida: '' };
+    return { problemaComun: '', solucionSugerida: '', estado: '', fecha: '' };
   }
 }

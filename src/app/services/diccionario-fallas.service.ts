@@ -8,8 +8,17 @@ export interface DiccionarioFalla {
   problemaComun: string;
   solucionSugerida: string;
   idAutor?: number;
+  estado?: string;
+  fecha?: string;
   fechaRegistro?: string;
 }
+
+export const ESTADOS_FALLA: { value: string; label: string }[] = [
+  { value: 'CRITICO', label: 'Crítico' },
+  { value: 'EN_CURSO', label: 'En curso' },
+  { value: 'MANTENIMIENTO', label: 'Mantenimiento' },
+  { value: 'RESUELTO', label: 'Resuelto' },
+];
 
 @Injectable({
   providedIn: 'root',
