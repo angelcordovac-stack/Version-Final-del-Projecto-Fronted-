@@ -206,16 +206,16 @@ import { SessionService } from '../../services/session.service';
             <p class="dash__section-title">⚡ Acceso Rápido</p>
           </div>
           <div class="dash__quick-links">
-            @if (esJefeOTecnico) {
+            @if (puedeIncidencias) {
               <a routerLink="/dashboard/GestionIncidencias" class="dash__quick-btn">🛠️ Incidencias</a>
             }
-            @if (esJefeOSistemas) {
+            @if (puedeRepuestos) {
               <a routerLink="/dashboard/GestionRepuestos" class="dash__quick-btn">📦 Repuestos</a>
             }
             @if (esJefe) {
               <a routerLink="/dashboard/MantenimientoUsuarios" class="dash__quick-btn">👥 Mantenimiento</a>
             }
-            @if (esJefeOTecnico) {
+            @if (puedeDiccionario) {
               <a routerLink="/dashboard/DiccionarioFallas" class="dash__quick-btn">📖 Diccionario</a>
             }
           </div>
@@ -247,6 +247,7 @@ export class InicioDash implements OnInit {
   }
 
   get esJefe(): boolean { return this.rolCodigo === 'JEFE'; }
-  get esJefeOTecnico(): boolean { return this.rolCodigo === 'JEFE' || this.rolCodigo === 'TECNICO'; }
-  get esJefeOSistemas(): boolean { return this.rolCodigo === 'JEFE' || this.rolCodigo === 'SISTEMAS'; }
+  get puedeIncidencias(): boolean { return this.rolCodigo === 'JEFE' || this.rolCodigo === 'TECNICO' || this.rolCodigo === 'SISTEMAS'; }
+  get puedeRepuestos(): boolean { return this.rolCodigo === 'JEFE' || this.rolCodigo === 'TECNICO' || this.rolCodigo === 'SISTEMAS'; }
+  get puedeDiccionario(): boolean { return this.rolCodigo === 'JEFE' || this.rolCodigo === 'TECNICO' || this.rolCodigo === 'SISTEMAS'; }
 }
