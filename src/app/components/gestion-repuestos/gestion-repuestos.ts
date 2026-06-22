@@ -35,6 +35,7 @@ export class GestionRepuestos implements OnInit {
     cantidad: 1,
     urgencia: 'estandar',
   };
+  erroresSolicitar: string[] = [];
 
   ngOnInit(): void {
     this.rolCodigo = this.session.getInfoSession()?.rol?.codigo ?? '';
@@ -77,31 +78,53 @@ export class GestionRepuestos implements OnInit {
 
   abrirSolicitar(): void {
     this.formSolicitar = { idIncidencia: null, descripcion: '', cantidad: 1, urgencia: 'estandar' };
+    this.erroresSolicitar = [];
     this.showSolicitarModal = true;
   }
 
   cerrarSolicitar(): void {
     this.showSolicitarModal = false;
+    this.erroresSolicitar = [];
   }
 
   incrementarCantidad(): void { this.formSolicitar.cantidad++; }
   decrementarCantidad(): void { if (this.formSolicitar.cantidad > 1) this.formSolicitar.cantidad--; }
 
   guardarSolicitar(): void {
-    if (!this.formSolicitar.idIncidencia || !this.formSolicitar.descripcion.trim()) {
-      this.toast.show('Selecciona una incidencia y describe el repuesto.', 'warning');
-      return;
+    this.erroresSolicitar = [];
+
+    if (!this.formSolicitar.idIncidencia) {
+      this.erroresSolicitar.push('Debes seleccionar una incidencia.');
     }
+    if (!this.formSolicitar.descripcion.trim()) {
+      this.erroresSolicitar.push('La descripción del repuesto es obligatoria.');
+    } else if (this.formSolicitar.descripcion.trim().length < 5) {
+      this.erroresSolicitar.push('La descripción debe tener al menos 5 caracteres.');
+    } else if (this.formSolicitar.descripcion.trim().length > 300) {
+      this.erroresSolicitar.push('La descripción no puede superar los 300 caracteres.');
+    }
+    if (this.formSolicitar.cantidad < 1) {
+      this.erroresSolicitar.push('La cantidad debe ser al menos 1.');
+    }
+
+    if (this.erroresSolicitar.length > 0) return;
+
     this.svc.solicitar({
-      idIncidencia: this.formSolicitar.idIncidencia,
-      descripcion: this.formSolicitar.descripcion,
+      idIncidencia: this.formSolicitar.idIncidencia!,
+      descripcion: this.formSolicitar.descripcion.trim(),
     }).subscribe({
       next: () => {
         this.toast.show('Repuesto solicitado correctamente.', 'success');
         this.cerrarSolicitar();
         this.cargar();
       },
-      error: () => this.toast.show('Error al solicitar el repuesto.', 'danger'),
+      error: (err) => {
+        if (err?.error?.campos) {
+          this.erroresSolicitar = Object.values(err.error.campos) as string[];
+        } else {
+          this.toast.show('Error al solicitar el repuesto.', 'danger');
+        }
+      },
     });
   }
 

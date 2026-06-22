@@ -24,9 +24,15 @@
         Nueva Solicitud de Inventario
       </div>
 
+      <!-- Errores de validación -->
+      <div *ngIf="erroresSolicitar.length > 0" class="alert alert--error" style="margin-bottom:1rem">
+        <div *ngFor="let e of erroresSolicitar">• {{ e }}</div>
+      </div>
+
       <div class="rep-form-group">
         <label>Incidencia <span class="rep-hint">ℹ</span></label>
-        <select [(ngModel)]="formSolicitar.idIncidencia" class="rep-select">
+        <select [(ngModel)]="formSolicitar.idIncidencia" class="rep-select"
+                [class.input--error]="erroresSolicitar.length > 0 && !formSolicitar.idIncidencia">
           <option [ngValue]="null">— Seleccionar incidencia —</option>
           <option *ngFor="let i of incidencias" [ngValue]="i.idIncidencia">
             INC-{{ i.idIncidencia }} — {{ i.codigoEquipo }}
@@ -38,13 +44,15 @@
       </div>
 
       <div class="rep-form-group">
-        <label>Descripción del Repuesto</label>
+        <label>Descripción del Repuesto * <small style="color:#aaa">(5–300 caracteres)</small></label>
         <textarea
           [(ngModel)]="formSolicitar.descripcion"
           class="rep-textarea"
+          [class.input--error]="erroresSolicitar.length > 0 && !formSolicitar.descripcion.trim()"
           rows="4"
           placeholder="Proporcione especificaciones técnicas y números de modelo..."
         ></textarea>
+        <small style="color:#aaa">{{ formSolicitar.descripcion.length }}/300</small>
       </div>
 
       <div class="rep-form-row">

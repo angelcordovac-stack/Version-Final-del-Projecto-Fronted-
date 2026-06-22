@@ -30,6 +30,7 @@ export class GestionIncidencias implements OnInit {
 
   showCrearModal = false;
   nuevaIncidencia: Partial<Incidencia> = this.emptyIncidencia();
+  erroresCrear: string[] = [];
 
   showAsignarModal = false;
   incidenciaParaAsignar: Incidencia | null = null;
@@ -81,17 +82,30 @@ export class GestionIncidencias implements OnInit {
 
   abrirCrear(): void {
     this.nuevaIncidencia = this.emptyIncidencia();
+    this.erroresCrear = [];
     this.showCrearModal = true;
   }
   cerrarCrear(): void {
     this.showCrearModal = false;
+    this.erroresCrear = [];
   }
   guardarCrear(): void {
+    this.erroresCrear = [];
     const i = this.nuevaIncidencia;
-    if (!i.codigoEquipo?.trim() || !i.descripcionProblema?.trim()) {
-      this.toast.show('Completa codigo de equipo y descripcion.', 'warning');
-      return;
+
+    if (!i.codigoEquipo?.trim()) {
+      this.erroresCrear.push('Debes seleccionar un equipo.');
     }
+    if (!i.descripcionProblema?.trim()) {
+      this.erroresCrear.push('La descripción del problema es obligatoria.');
+    } else if (i.descripcionProblema.trim().length < 10) {
+      this.erroresCrear.push('La descripción debe tener al menos 10 caracteres.');
+    } else if (i.descripcionProblema.trim().length > 500) {
+      this.erroresCrear.push('La descripción no puede superar los 500 caracteres.');
+    }
+
+    if (this.erroresCrear.length > 0) return;
+
     const user = this.session.getInfoSession();
     i.quienRegistra = user?.nombreCompleto ?? '—';
 
@@ -99,9 +113,17 @@ export class GestionIncidencias implements OnInit {
       next: () => {
         this.toast.show('Incidencia registrada.', 'success');
         this.showCrearModal = false;
+        this.erroresCrear = [];
         this.cargar();
       },
-      error: () => this.toast.show('Error al registrar la incidencia.', 'danger'),
+      error: (err) => {
+        // Mostrar errores de validación del backend si los hay
+        if (err?.error?.campos) {
+          this.erroresCrear = Object.values(err.error.campos) as string[];
+        } else {
+          this.toast.show('Error al registrar la incidencia.', 'danger');
+        }
+      },
     });
   }
 

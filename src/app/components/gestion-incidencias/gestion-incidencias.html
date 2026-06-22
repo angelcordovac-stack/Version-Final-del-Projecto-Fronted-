@@ -90,9 +90,14 @@
         <button class="mant-modal__close" (click)="cerrarCrear()">✕</button>
       </div>
       <div class="mant-modal__body">
+        <!-- Errores de validación -->
+        <div *ngIf="erroresCrear.length > 0" class="alert alert--error">
+          <div *ngFor="let e of erroresCrear">• {{ e }}</div>
+        </div>
         <div class="form-group">
           <label>Equipo *</label>
-          <select [(ngModel)]="nuevaIncidencia.codigoEquipo">
+          <select [(ngModel)]="nuevaIncidencia.codigoEquipo"
+                  [class.input--error]="erroresCrear.length > 0 && !nuevaIncidencia.codigoEquipo?.trim()">
             <option value="">— Seleccionar equipo —</option>
             <option *ngFor="let e of equipos" [value]="e.codigoEquipo">
               {{ e.codigoEquipo }} — {{ e.marcaModelo }} ({{ e.areaUbicacion }})
@@ -100,9 +105,12 @@
           </select>
         </div>
         <div class="form-group">
-          <label>Descripcion del problema *</label>
+          <label>Descripcion del problema * <small style="color:#888">(10–500 caracteres)</small></label>
           <textarea rows="3" [(ngModel)]="nuevaIncidencia.descripcionProblema"
-                    placeholder="Describe que ocurre..."></textarea>
+                    placeholder="Describe qué ocurre con al menos 10 caracteres..."
+                    [class.input--error]="erroresCrear.length > 0 && !nuevaIncidencia.descripcionProblema?.trim()">
+          </textarea>
+          <small style="color:#aaa">{{ (nuevaIncidencia.descripcionProblema ?? '').length }}/500</small>
         </div>
       </div>
       <div class="mant-modal__footer">

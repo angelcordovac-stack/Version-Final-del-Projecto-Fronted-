@@ -1,19 +1,21 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { ReactiveFormsModule, FormBuilder, FormGroup, Validators, AbstractControl } from '@angular/forms';
 import { UsuarioService, Usuario, UsuarioRequest } from '../../../services/usuario.service';
 import { ToastService } from '../../../services/toast.service';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-mantenimiento-usuarios',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule],
   templateUrl: './mantenimiento-usuarios.html',
   styleUrl: './mantenimiento-usuarios.scss',
 })
 export class MantenimientoUsuarios implements OnInit {
   private usuarioService = inject(UsuarioService);
   private toast = inject(ToastService);
+  private fb = inject(FormBuilder);
 
   usuarios: Usuario[] = [];
   isLoading = true;
@@ -22,8 +24,8 @@ export class MantenimientoUsuarios implements OnInit {
   // Modal crear/editar
   showModal = false;
   isEditing = false;
-  formData: UsuarioRequest = this.emptyForm();
-  formErrors: string[] = [];
+  usuarioEditandoId: number | null = null;
+  usuarioForm!: FormGroup;
 
   // Confirmar eliminación
   showDeleteConfirm = false;
@@ -36,7 +38,33 @@ export class MantenimientoUsuarios implements OnInit {
   ];
 
   ngOnInit(): void {
+    this.inicializarForm();
     this.cargarUsuarios();
+  }
+
+  private inicializarForm(isEditing = false): void {
+    this.usuarioForm = this.fb.group({
+      nombreCompleto: ['', [
+        Validators.required,
+        Validators.minLength(3),
+        Validators.maxLength(100),
+        Validators.pattern(/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/),
+      ]],
+      correo: ['', [
+        Validators.required,
+        Validators.email,
+        Validators.maxLength(100),
+      ]],
+      password: ['', isEditing
+        ? [Validators.minLength(6)]                              // Opcional al editar
+        : [Validators.required, Validators.minLength(6)],       // Obligatorio al crear
+      ],
+      telefono: ['', [
+        Validators.pattern(/^[0-9+\-\s]{7,15}$/),
+      ]],
+      idPerfil: [2, [Validators.required]],
+      activo: [true],
+    });
   }
 
   cargarUsuarios(): void {
@@ -66,23 +94,23 @@ export class MantenimientoUsuarios implements OnInit {
 
   abrirNuevo(): void {
     this.isEditing = false;
-    this.formData = this.emptyForm();
-    this.formErrors = [];
+    this.usuarioEditandoId = null;
+    this.inicializarForm(false);
     this.showModal = true;
   }
 
   abrirEditar(u: Usuario): void {
     this.isEditing = true;
-    this.formData = {
-      idUsuario: u.idUsuario,
+    this.usuarioEditandoId = u.idUsuario;
+    this.inicializarForm(true);
+    this.usuarioForm.patchValue({
       nombreCompleto: u.nombreCompleto,
       correo: u.correo,
-      telefono: u.telefono,
+      telefono: u.telefono ?? '',
       idPerfil: u.idPerfil,
       activo: u.activo,
       password: '',
-    };
-    this.formErrors = [];
+    });
     this.showModal = true;
   }
 
@@ -90,35 +118,46 @@ export class MantenimientoUsuarios implements OnInit {
     this.showModal = false;
   }
 
-  validar(): boolean {
-    this.formErrors = [];
-    if (!this.formData.nombreCompleto?.trim()) this.formErrors.push('El nombre completo es requerido.');
-    if (!this.formData.correo?.trim()) this.formErrors.push('El correo es requerido.');
-    if (!this.isEditing && !this.formData.password?.trim()) this.formErrors.push('La contraseña es requerida.');
-    if (!this.formData.idPerfil) this.formErrors.push('El rol es requerido.');
-    return this.formErrors.length === 0;
-  }
-
   guardar(): void {
-    if (!this.validar()) return;
+    if (this.usuarioForm.invalid) {
+      this.usuarioForm.markAllAsTouched();
+      return;
+    }
 
-    if (this.isEditing && this.formData.idUsuario) {
-      this.usuarioService.actualizarUsuario(this.formData.idUsuario, this.formData).subscribe({
+    const valores = this.usuarioForm.value;
+    const payload: UsuarioRequest = {
+      nombreCompleto: valores.nombreCompleto.trim(),
+      correo: valores.correo.trim().toLowerCase(),
+      telefono: valores.telefono?.trim() || '',
+      idPerfil: valores.idPerfil,
+      activo: valores.activo,
+      password: valores.password || '',
+    };
+
+    if (this.isEditing && this.usuarioEditandoId) {
+      payload.idUsuario = this.usuarioEditandoId;
+      this.usuarioService.actualizarUsuario(this.usuarioEditandoId, payload).subscribe({
         next: () => {
           this.toast.show('Usuario actualizado.', 'success');
           this.cerrarModal();
           this.cargarUsuarios();
         },
-        error: () => this.toast.show('Error al actualizar el usuario.', 'danger'),
+        error: (err) => {
+          const msg = err?.error?.error ?? 'Error al actualizar el usuario.';
+          this.toast.show(msg, 'danger');
+        },
       });
     } else {
-      this.usuarioService.registrarUsuario(this.formData).subscribe({
+      this.usuarioService.registrarUsuario(payload).subscribe({
         next: () => {
           this.toast.show('Usuario registrado.', 'success');
           this.cerrarModal();
           this.cargarUsuarios();
         },
-        error: () => this.toast.show('Error al registrar el usuario.', 'danger'),
+        error: (err) => {
+          const msg = err?.error?.error ?? 'Error al registrar el usuario.';
+          this.toast.show(msg, 'danger');
+        },
       });
     }
   }
@@ -152,14 +191,34 @@ export class MantenimientoUsuarios implements OnInit {
     return this.ROLES.find(r => r.id === idPerfil)?.descripcion ?? '—';
   }
 
-  private emptyForm(): UsuarioRequest {
-    return {
-      nombreCompleto: '',
-      correo: '',
-      password: '',
-      telefono: '',
-      idPerfil: 2,
-      activo: true,
-    };
+  // Helpers para el template
+  get f(): Record<string, AbstractControl> {
+    return this.usuarioForm.controls;
+  }
+
+  campoInvalido(campo: string): boolean {
+    const ctrl = this.usuarioForm.get(campo);
+    return !!(ctrl?.invalid && ctrl?.touched);
+  }
+
+  mensajeError(campo: string): string {
+    const ctrl = this.usuarioForm.get(campo);
+    if (!ctrl?.errors) return '';
+
+    if (ctrl.errors['required'])   return 'Este campo es obligatorio.';
+    if (ctrl.errors['email'])      return 'Ingresa un correo válido (ej: usuario@dominio.com).';
+    if (ctrl.errors['minlength'])  {
+      const min = ctrl.errors['minlength'].requiredLength;
+      return `Mínimo ${min} caracteres.`;
+    }
+    if (ctrl.errors['maxlength'])  {
+      const max = ctrl.errors['maxlength'].requiredLength;
+      return `Máximo ${max} caracteres.`;
+    }
+    if (ctrl.errors['pattern']) {
+      if (campo === 'nombreCompleto') return 'Solo se permiten letras y espacios.';
+      if (campo === 'telefono')       return 'Formato inválido. Ej: 999 888 777';
+    }
+    return 'Valor inválido.';
   }
 }

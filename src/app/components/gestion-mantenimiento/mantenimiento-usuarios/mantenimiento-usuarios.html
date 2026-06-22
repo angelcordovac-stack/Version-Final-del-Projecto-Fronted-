@@ -68,42 +68,93 @@
         <h2>{{ isEditing ? '✏️ Editar Usuario' : '➕ Nuevo Usuario' }}</h2>
         <button class="mant-modal__close" (click)="cerrarModal()">✕</button>
       </div>
-      <div class="mant-modal__body">
-        <div *ngIf="formErrors.length > 0" class="alert alert--error">
-          <div *ngFor="let e of formErrors">• {{ e }}</div>
-        </div>
+
+      <div class="mant-modal__body" [formGroup]="usuarioForm">
+
+        <!-- Nombre Completo -->
         <div class="form-group">
           <label>Nombre Completo *</label>
-          <input type="text" [(ngModel)]="formData.nombreCompleto" placeholder="Ej: Juan Pérez" />
+          <input
+            type="text"
+            formControlName="nombreCompleto"
+            placeholder="Ej: Juan Pérez"
+            [class.input--error]="campoInvalido('nombreCompleto')"
+          />
+          <span class="field-error" *ngIf="campoInvalido('nombreCompleto')">
+            {{ mensajeError('nombreCompleto') }}
+          </span>
         </div>
+
+        <!-- Correo -->
         <div class="form-group">
           <label>Correo *</label>
-          <input type="email" [(ngModel)]="formData.correo" placeholder="usuario@softcorp.pe" />
+          <input
+            type="email"
+            formControlName="correo"
+            placeholder="usuario@softcorp.pe"
+            [class.input--error]="campoInvalido('correo')"
+          />
+          <span class="field-error" *ngIf="campoInvalido('correo')">
+            {{ mensajeError('correo') }}
+          </span>
         </div>
+
+        <!-- Contraseña -->
         <div class="form-group">
           <label>{{ isEditing ? 'Nueva Contraseña (dejar vacío para no cambiar)' : 'Contraseña *' }}</label>
-          <input type="password" [(ngModel)]="formData.password" placeholder="Contraseña" />
+          <input
+            type="password"
+            formControlName="password"
+            placeholder="{{ isEditing ? 'Dejar vacío para mantener actual' : 'Mínimo 6 caracteres' }}"
+            [class.input--error]="campoInvalido('password')"
+          />
+          <span class="field-error" *ngIf="campoInvalido('password')">
+            {{ mensajeError('password') }}
+          </span>
         </div>
+
+        <!-- Teléfono -->
         <div class="form-group">
           <label>Teléfono</label>
-          <input type="text" [(ngModel)]="formData.telefono" placeholder="Opcional" />
+          <input
+            type="text"
+            formControlName="telefono"
+            placeholder="Ej: 999 888 777"
+            [class.input--error]="campoInvalido('telefono')"
+          />
+          <span class="field-error" *ngIf="campoInvalido('telefono')">
+            {{ mensajeError('telefono') }}
+          </span>
         </div>
+
+        <!-- Rol -->
         <div class="form-group">
           <label>Rol *</label>
-          <select [(ngModel)]="formData.idPerfil">
+          <select formControlName="idPerfil" [class.input--error]="campoInvalido('idPerfil')">
             <option *ngFor="let r of ROLES" [ngValue]="r.id">{{ r.descripcion }}</option>
           </select>
+          <span class="field-error" *ngIf="campoInvalido('idPerfil')">
+            {{ mensajeError('idPerfil') }}
+          </span>
         </div>
+
+        <!-- Estado activo -->
         <div class="form-group form-group--check">
           <label>
-            <input type="checkbox" [(ngModel)]="formData.activo" />
+            <input type="checkbox" formControlName="activo" />
             Usuario activo
           </label>
         </div>
+
       </div>
+
       <div class="mant-modal__footer">
         <button class="btn btn--outline" (click)="cerrarModal()">Cancelar</button>
-        <button class="btn btn--primary" (click)="guardar()">
+        <button
+          class="btn btn--primary"
+          (click)="guardar()"
+          [disabled]="usuarioForm.invalid && usuarioForm.touched"
+        >
           {{ isEditing ? 'Guardar Cambios' : 'Crear Usuario' }}
         </button>
       </div>
