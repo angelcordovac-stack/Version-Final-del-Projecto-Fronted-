@@ -15,7 +15,7 @@
 
   <div *ngIf="isLoading" class="rep-loading">Cargando repuestos...</div>
 
-  <div *ngIf="!isLoading" class="rep-layout">
+  <div *ngIf="!isLoading" class="rep-layout" [class.rep-layout--solo]="!esTecnico">
 
     <!-- ── PANEL IZQUIERDO: FORMULARIO ── -->
     <div class="rep-form-panel" *ngIf="esTecnico">
@@ -88,7 +88,7 @@
       </div>
 
       <!-- Cabecera columnas -->
-      <div class="rep-cols">
+      <div class="rep-cols" [class.rep-cols--sin-accion]="esTecnico">
         <span>Info de Pieza</span>
         <span>Código</span>
         <span>Cant.</span>
@@ -97,7 +97,7 @@
       </div>
 
       <!-- Filas -->
-      <div class="rep-item" *ngFor="let r of repuestosFiltrados">
+      <div class="rep-item" [class.rep-item--sin-accion]="esTecnico" *ngFor="let r of repuestosFiltrados">
         <div class="rep-item__info">
           <span class="rep-item__name">{{ r.descripcion || '—' }}</span>
           <span class="rep-item__meta">Incidencia #{{ r.idIncidencia ?? '—' }}</span>
