@@ -41,8 +41,14 @@
     "@angular/build": "^21.2.12",
     "@angular/cli": "^21.2.12",
     "@angular/compiler-cli": "^21.2.14",
-    "jsdom": "^27.1.0",
-    "typescript": "~5.9.2",
-    "vitest": "^4.0.8"
+    "@types/jasmine": "~5.1.0",
+    "jasmine-core": "~5.5.0",
+    "karma": "~6.4.4",
+    "karma-chrome-launcher": "~3.2.0",
+    "karma-coverage": "~2.2.1",
+    "karma-jasmine": "~5.1.0",
+    "karma-jasmine-html-reporter": "~2.1.0",
+    "puppeteer": "^23.0.0",
+    "typescript": "~5.9.2"
   }
 }

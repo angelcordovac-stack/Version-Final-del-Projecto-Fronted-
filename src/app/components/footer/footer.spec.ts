@@ -20,4 +20,9 @@ describe('Footer', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
+  it('should render a footer element', () => {
+    const compiled = fixture.nativeElement as HTMLElement;
+    expect(compiled.querySelector('footer')).toBeTruthy();
+  });
 });

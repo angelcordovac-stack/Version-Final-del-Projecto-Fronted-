@@ -1,0 +1,76 @@
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { of } from 'rxjs';
+import { provideRouter } from '@angular/router';
+import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
+
+import { InicioDash } from './inicio-dash';
+import { IncidenciaService } from '../../services/incidencia.service';
+import { SessionService } from '../../services/session.service';
+
+describe('InicioDash', () => {
+  let component: InicioDash;
+  let fixture: ComponentFixture<InicioDash>;
+
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      imports: [InicioDash],
+      providers: [provideRouter([]), provideHttpClient(), provideHttpClientTesting()],
+    }).compileComponents();
+
+    fixture = TestBed.createComponent(InicioDash);
+    component = fixture.componentInstance;
+  });
+
+  it('should create', () => {
+    expect(component).toBeTruthy();
+  });
+
+  it('ngOnInit() should compute totals, pendientes and solucionadas from the incidencias', () => {
+    const incidenciaService = TestBed.inject(IncidenciaService);
+    const sessionService = TestBed.inject(SessionService);
+    spyOn(sessionService, 'getInfoSession').and.returnValue({
+      idUsuario: 1, nombreCompleto: 'Ana', correo: 'a@test.com', idPerfil: 1,
+      rol: { codigo: 'JEFE', descripcion: 'Jefe' },
+    } as any);
+    spyOn(incidenciaService, 'getAll').and.returnValue(of([
+      { idIncidencia: 1, estado: 'Pendiente' },
+      { idIncidencia: 2, estado: 'Pendiente' },
+      { idIncidencia: 3, estado: 'Solucionado' },
+    ] as any));
+
+    component.ngOnInit();
+
+    expect(component.totalIncidencias).toBe(3);
+    expect(component.pendientes).toBe(2);
+    expect(component.solucionadas).toBe(1);
+    expect(component.rolCodigo).toBe('JEFE');
+  });
+
+  it('ngOnInit() should handle an empty list of incidencias', () => {
+    const incidenciaService = TestBed.inject(IncidenciaService);
+    const sessionService = TestBed.inject(SessionService);
+    spyOn(sessionService, 'getInfoSession').and.returnValue(null);
+    spyOn(incidenciaService, 'getAll').and.returnValue(of([] as any));
+
+    component.ngOnInit();
+
+    expect(component.totalIncidencias).toBe(0);
+    expect(component.pendientes).toBe(0);
+    expect(component.solucionadas).toBe(0);
+    expect(component.rolCodigo).toBe('');
+  });
+
+  it('role getters should allow access for JEFE, TECNICO and SISTEMAS', () => {
+    component.rolCodigo = 'TECNICO';
+    expect(component.puedeIncidencias).toBeTrue();
+    expect(component.puedeRepuestos).toBeTrue();
+    expect(component.puedeDiccionario).toBeTrue();
+    expect(component.esJefe).toBeFalse();
+  });
+
+  it('esJefe getter should only be true for JEFE', () => {
+    component.rolCodigo = 'JEFE';
+    expect(component.esJefe).toBeTrue();
+  });
+});
