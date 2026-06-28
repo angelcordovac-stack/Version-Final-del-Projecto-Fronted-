@@ -443,6 +443,24 @@
   }
 }
 
+/* ── ALERTAS Y VALIDACIÓN ─────────────────────────────── */
+.alert {
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  margin-bottom: 0.25rem;
+  font-size: 0.85rem;
+  line-height: 1.5;
+}
+.alert--error {
+  background: #fee2e2;
+  color: #991b1b;
+  border: 1px solid #fecaca;
+}
+
+.input--error {
+  border-color: #ef4444 !important;
+}
+
 /* ── BUTTONS ──────────────────────────────────────────── */
 .btn {
   display: inline-flex;

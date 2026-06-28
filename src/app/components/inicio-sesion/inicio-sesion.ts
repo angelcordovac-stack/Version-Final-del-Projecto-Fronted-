@@ -26,7 +26,7 @@ export class InicioSesion {
 
   constructor() {
     this.loginForm = this.fb.group({
-      correo: ['', [Validators.required, Validators.email]],
+      correo: ['', [Validators.required, Validators.email, Validators.maxLength(100)]],
       password: ['', [Validators.required, Validators.minLength(1)]],
     });
   }

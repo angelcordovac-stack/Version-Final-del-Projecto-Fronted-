@@ -29,6 +29,7 @@ export class GestionRepuestos implements OnInit {
 
   // Formulario solicitar
   showSolicitarModal = false;
+  readonly cantidadMax = 50;
   formSolicitar = {
     idIncidencia: null as number | null,
     descripcion: '',
@@ -87,7 +88,9 @@ export class GestionRepuestos implements OnInit {
     this.erroresSolicitar = [];
   }
 
-  incrementarCantidad(): void { this.formSolicitar.cantidad++; }
+  incrementarCantidad(): void {
+    if (this.formSolicitar.cantidad < this.cantidadMax) this.formSolicitar.cantidad++;
+  }
   decrementarCantidad(): void { if (this.formSolicitar.cantidad > 1) this.formSolicitar.cantidad--; }
 
   guardarSolicitar(): void {
@@ -96,15 +99,20 @@ export class GestionRepuestos implements OnInit {
     if (!this.formSolicitar.idIncidencia) {
       this.erroresSolicitar.push('Debes seleccionar una incidencia.');
     }
-    if (!this.formSolicitar.descripcion.trim()) {
+
+    const descripcion = this.formSolicitar.descripcion.trim();
+    if (!descripcion) {
       this.erroresSolicitar.push('La descripción del repuesto es obligatoria.');
-    } else if (this.formSolicitar.descripcion.trim().length < 5) {
+    } else if (descripcion.length < 5) {
       this.erroresSolicitar.push('La descripción debe tener al menos 5 caracteres.');
-    } else if (this.formSolicitar.descripcion.trim().length > 300) {
+    } else if (descripcion.length > 300) {
       this.erroresSolicitar.push('La descripción no puede superar los 300 caracteres.');
     }
-    if (this.formSolicitar.cantidad < 1) {
+
+    if (!Number.isInteger(this.formSolicitar.cantidad) || this.formSolicitar.cantidad < 1) {
       this.erroresSolicitar.push('La cantidad debe ser al menos 1.');
+    } else if (this.formSolicitar.cantidad > this.cantidadMax) {
+      this.erroresSolicitar.push(`La cantidad no puede superar ${this.cantidadMax} unidades.`);
     }
 
     if (this.erroresSolicitar.length > 0) return;

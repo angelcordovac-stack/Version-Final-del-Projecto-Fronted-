@@ -50,6 +50,7 @@
           class="rep-textarea"
           [class.input--error]="erroresSolicitar.length > 0 && !formSolicitar.descripcion.trim()"
           rows="4"
+          maxlength="300"
           placeholder="Proporcione especificaciones técnicas y números de modelo..."
         ></textarea>
         <small style="color:#aaa">{{ formSolicitar.descripcion.length }}/300</small>
@@ -59,9 +60,9 @@
         <div class="rep-form-group rep-form-group--qty">
           <label>Cantidad</label>
           <div class="rep-qty">
-            <button class="rep-qty__btn" (click)="decrementarCantidad()">−</button>
+            <button class="rep-qty__btn" (click)="decrementarCantidad()" [disabled]="formSolicitar.cantidad <= 1">−</button>
             <span class="rep-qty__val">{{ formSolicitar.cantidad }}</span>
-            <button class="rep-qty__btn" (click)="incrementarCantidad()">+</button>
+            <button class="rep-qty__btn" (click)="incrementarCantidad()" [disabled]="formSolicitar.cantidad >= cantidadMax">+</button>
           </div>
         </div>
         <div class="rep-form-group rep-form-group--urgency">

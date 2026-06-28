@@ -123,6 +123,13 @@
 }
 .alert--success { background: #d1fae5; color: #065f46; border: 1px solid #a7f3d0; }
 .alert--error { background: #fee2e2; color: #991b1b; border: 1px solid #fecaca; }
+
+.input--error { border-color: #ef4444 !important; }
+.field-error {
+  color: #ef4444;
+  font-size: 0.78rem;
+  margin-top: -0.2rem;
+}
  
 .loading {
   text-align: center;

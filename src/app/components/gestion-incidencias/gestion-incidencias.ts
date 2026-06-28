@@ -40,6 +40,7 @@ export class GestionIncidencias implements OnInit {
   showSolucionarModal = false;
   incidenciaParaSolucionar: Incidencia | null = null;
   tipoSolucionInput = '';
+  erroresSolucionar: string[] = [];
 
   ngOnInit(): void {
     const user = this.session.getInfoSession();
@@ -96,11 +97,13 @@ export class GestionIncidencias implements OnInit {
     if (!i.codigoEquipo?.trim()) {
       this.erroresCrear.push('Debes seleccionar un equipo.');
     }
-    if (!i.descripcionProblema?.trim()) {
+
+    const descripcion = (i.descripcionProblema ?? '').trim();
+    if (!descripcion) {
       this.erroresCrear.push('La descripción del problema es obligatoria.');
-    } else if (i.descripcionProblema.trim().length < 10) {
+    } else if (descripcion.length < 10) {
       this.erroresCrear.push('La descripción debe tener al menos 10 caracteres.');
-    } else if (i.descripcionProblema.trim().length > 500) {
+    } else if (descripcion.length > 500) {
       this.erroresCrear.push('La descripción no puede superar los 500 caracteres.');
     }
 
@@ -161,18 +164,31 @@ export class GestionIncidencias implements OnInit {
   abrirSolucionar(inc: Incidencia): void {
     this.incidenciaParaSolucionar = inc;
     this.tipoSolucionInput = '';
+    this.erroresSolucionar = [];
     this.showSolucionarModal = true;
   }
   cerrarSolucionar(): void {
     this.showSolucionarModal = false;
     this.incidenciaParaSolucionar = null;
+    this.erroresSolucionar = [];
   }
   confirmarSolucionar(): void {
-    if (!this.tipoSolucionInput.trim() || !this.incidenciaParaSolucionar) {
-      this.toast.show('Describe la solucion aplicada.', 'warning');
-      return;
+    this.erroresSolucionar = [];
+    const solucion = this.tipoSolucionInput.trim();
+
+    if (!this.incidenciaParaSolucionar) return;
+
+    if (!solucion) {
+      this.erroresSolucionar.push('Debes describir la solución aplicada.');
+    } else if (solucion.length < 5) {
+      this.erroresSolucionar.push('La solución debe tener al menos 5 caracteres.');
+    } else if (solucion.length > 300) {
+      this.erroresSolucionar.push('La solución no puede superar los 300 caracteres.');
     }
-    this.svc.solucionar(this.incidenciaParaSolucionar.idIncidencia, this.tipoSolucionInput).subscribe({
+
+    if (this.erroresSolucionar.length > 0) return;
+
+    this.svc.solucionar(this.incidenciaParaSolucionar.idIncidencia, solucion).subscribe({
       next: () => {
         this.toast.show('Incidencia marcada como solucionada.', 'success');
         this.cerrarSolucionar();

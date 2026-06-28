@@ -27,6 +27,7 @@ export class DiccionarioFallas implements OnInit {
   showModal = false;
   guardando = false;
   formData: DiccionarioFalla = this.emptyForm();
+  erroresForm: string[] = [];
 
   showDetalle = false;
   fallaSeleccionada: DiccionarioFalla | null = null;
@@ -69,12 +70,14 @@ export class DiccionarioFallas implements OnInit {
   abrirNueva(): void {
     this.formData = this.emptyForm();
     this.guardando = false;
+    this.erroresForm = [];
     this.showModal = true;
   }
 
   cerrarModal(): void {
     this.showModal = false;
     this.guardando = false;
+    this.erroresForm = [];
   }
 
   abrirDetalle(falla: DiccionarioFalla): void {
@@ -95,17 +98,38 @@ export class DiccionarioFallas implements OnInit {
 
   guardar(): void {
     if (this.guardando) return;
-    if (!this.formData.problemaComun?.trim() || !this.formData.solucionSugerida?.trim()) {
-      this.toast.show('Completa el problema y la solución.', 'warning');
-      return;
+
+    this.erroresForm = [];
+    const problema = (this.formData.problemaComun ?? '').trim();
+    const solucion = (this.formData.solucionSugerida ?? '').trim();
+
+    if (!problema) {
+      this.erroresForm.push('El problema común es obligatorio.');
+    } else if (problema.length < 5) {
+      this.erroresForm.push('El problema común debe tener al menos 5 caracteres.');
+    } else if (problema.length > 150) {
+      this.erroresForm.push('El problema común no puede superar los 150 caracteres.');
     }
+
+    if (!solucion) {
+      this.erroresForm.push('La solución sugerida es obligatoria.');
+    } else if (solucion.length < 10) {
+      this.erroresForm.push('La solución sugerida debe tener al menos 10 caracteres.');
+    } else if (solucion.length > 1000) {
+      this.erroresForm.push('La solución sugerida no puede superar los 1000 caracteres.');
+    }
+
     if (!this.formData.estado) {
-      this.toast.show('Selecciona el estado de la solución.', 'warning');
-      return;
+      this.erroresForm.push('Selecciona el estado de la solución.');
     }
+
+    if (this.erroresForm.length > 0) return;
+
     this.guardando = true;
     const user = this.session.getInfoSession();
     this.formData.idAutor = user?.idUsuario;
+    this.formData.problemaComun = problema;
+    this.formData.solucionSugerida = solucion;
 
     this.svc.registrar(this.formData).subscribe({
       next: () => {
