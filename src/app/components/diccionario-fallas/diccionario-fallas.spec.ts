@@ -105,15 +105,13 @@ describe('DiccionarioFallas', () => {
   describe('guardar()', () => {
     it('should warn and not call the service when problemaComun is empty', () => {
       const svc = TestBed.inject(DiccionarioFallasService);
-      const toast = TestBed.inject(ToastService);
       const registrarSpy = spyOn(svc, 'registrar');
-      const toastSpy = spyOn(toast, 'show');
 
       component.formData = { problemaComun: '', solucionSugerida: 'algo', estado: 'RESUELTO' };
       component.guardar();
 
       expect(registrarSpy).not.toHaveBeenCalled();
-      expect(toastSpy).toHaveBeenCalledWith('Completa el problema y la solución.', 'warning');
+      expect(component.erroresForm.length).toBeGreaterThan(0);
     });
 
     it('should warn and not call the service when estado is missing', () => {
@@ -137,7 +135,7 @@ describe('DiccionarioFallas', () => {
       spyOn(svc, 'getAll').and.returnValue(of(fallas));
       const toastSpy = spyOn(toast, 'show');
 
-      component.formData = { problemaComun: 'algo', solucionSugerida: 'una solucion', estado: 'EN_CURSO' };
+      component.formData = { problemaComun: 'Problema de prueba', solucionSugerida: 'Una solucion de prueba', estado: 'EN_CURSO' };
       component.guardar();
 
       expect(registrarSpy).toHaveBeenCalled();
@@ -157,7 +155,7 @@ describe('DiccionarioFallas', () => {
       );
       const toastSpy = spyOn(toast, 'show');
 
-      component.formData = { problemaComun: 'algo', solucionSugerida: 'una solucion', estado: 'EN_CURSO' };
+      component.formData = { problemaComun: 'Problema de prueba', solucionSugerida: 'Una solucion de prueba', estado: 'EN_CURSO' };
       component.guardar();
 
       expect(toastSpy).toHaveBeenCalledWith('Ya existe esa falla', 'danger');
