@@ -32,7 +32,7 @@ describe('roleGuard', () => {
     });
   });
 
-  it('should allow access when the user role is included in allowedRoles', () => {
+  it('debe permitir acceso cuyo el rol del usuario está incluido en allowedRoles', () => {
     const sessionService = TestBed.inject(SessionService);
     spyOn(sessionService, 'getInfoSession').and.returnValue(usuarioJefe);
 
@@ -42,7 +42,7 @@ describe('roleGuard', () => {
     expect(routerSpy.navigate).not.toHaveBeenCalled();
   });
 
-  it('should block access and redirect to /dashboard when the role is not allowed', () => {
+  it('debe bloquear acceso y redirigir a /dashboard cuando el rol no está permitido', () => {
     const sessionService = TestBed.inject(SessionService);
     const toastService = TestBed.inject(ToastService);
     spyOn(sessionService, 'getInfoSession').and.returnValue(usuarioJefe);
@@ -55,7 +55,7 @@ describe('roleGuard', () => {
     expect(toastSpy).toHaveBeenCalledWith('Tu rol no permite acceder a esta sección.', 'warning');
   });
 
-  it('should block access and redirect to /login when there is no valid session', () => {
+  it('debe bloquear acceso y redirigir a /login cuando no hay sesión válida', () => {
     const sessionService = TestBed.inject(SessionService);
     const toastService = TestBed.inject(ToastService);
     spyOn(sessionService, 'getInfoSession').and.returnValue(null);

@@ -28,11 +28,11 @@ describe('UsuarioService', () => {
 
   afterEach(() => httpMock.verify());
 
-  it('should be created', () => {
+  it('debe ser creado', () => {
     expect(service).toBeTruthy();
   });
 
-  it('getUsuarios() should GET all usuarios', () => {
+  it('getUsuarios() debe obtener todos los usuarios', () => {
     service.getUsuarios().subscribe((res) => expect(res).toEqual([usuario]));
 
     const req = httpMock.expectOne(baseUrl);
@@ -40,7 +40,7 @@ describe('UsuarioService', () => {
     req.flush([usuario]);
   });
 
-  it('getUsuario() should GET a single usuario by id', () => {
+  it('getUsuario() debe obtener un usuario por id', () => {
     service.getUsuario(1).subscribe((res) => expect(res).toEqual(usuario));
 
     const req = httpMock.expectOne(`${baseUrl}/1`);
@@ -48,7 +48,7 @@ describe('UsuarioService', () => {
     req.flush(usuario);
   });
 
-  it('registrarUsuario() should POST the payload translating password -> passwordHash', () => {
+  it('registrarUsuario() debe hacer POST con la carga traduciendo password -> passwordHash', () => {
     const nuevo: UsuarioRequest = {
       nombreCompleto: 'Ana Lopez',
       correo: 'ana@test.com',
@@ -72,7 +72,7 @@ describe('UsuarioService', () => {
     req.flush(usuario);
   });
 
-  it('actualizarUsuario() should PUT the payload translating password -> passwordHash', () => {
+  it('actualizarUsuario() debe hacer PUT con la carga traduciendo password -> passwordHash', () => {
     const editado: UsuarioRequest = {
       idUsuario: 1,
       nombreCompleto: 'Ana Lopez',
@@ -91,7 +91,7 @@ describe('UsuarioService', () => {
     req.flush(usuario);
   });
 
-  it('eliminarUsuario() should DELETE the usuario by id', () => {
+  it('eliminarUsuario() debe eliminar el usuario por id', () => {
     service.eliminarUsuario(1).subscribe();
 
     const req = httpMock.expectOne(`${baseUrl}/1`);

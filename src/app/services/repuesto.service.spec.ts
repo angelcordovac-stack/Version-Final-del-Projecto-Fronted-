@@ -28,11 +28,11 @@ describe('RepuestoService', () => {
 
   afterEach(() => httpMock.verify());
 
-  it('should be created', () => {
+  it('debe ser creado', () => {
     expect(service).toBeTruthy();
   });
 
-  it('getAll() should GET all repuestos', () => {
+  it('getAll() debe obtener todos los repuestos', () => {
     service.getAll().subscribe((res) => expect(res).toEqual([repuesto]));
 
     const req = httpMock.expectOne(baseUrl);
@@ -40,7 +40,7 @@ describe('RepuestoService', () => {
     req.flush([repuesto]);
   });
 
-  it('getSolicitados() should GET repuestos solicitados', () => {
+  it('getSolicitados() debe obtener repuestos solicitados', () => {
     service.getSolicitados().subscribe((res) => expect(res).toEqual([repuesto]));
 
     const req = httpMock.expectOne(`${baseUrl}/solicitados`);
@@ -48,7 +48,7 @@ describe('RepuestoService', () => {
     req.flush([repuesto]);
   });
 
-  it('getEntregados() should GET repuestos entregados', () => {
+  it('getEntregados() debe obtener repuestos entregados', () => {
     const entregado: Repuesto = { ...repuesto, estado: 'Entregado' };
     service.getEntregados().subscribe((res) => expect(res).toEqual([entregado]));
 
@@ -57,7 +57,7 @@ describe('RepuestoService', () => {
     req.flush([entregado]);
   });
 
-  it('solicitar() should POST a new repuesto request', () => {
+  it('solicitar() debe hacer POST una nueva solicitud de repuesto', () => {
     const nuevo: Partial<Repuesto> = { descripcion: 'Memoria RAM 8GB', idIncidencia: 1 };
 
     service.solicitar(nuevo).subscribe((res) => expect(res).toEqual(repuesto));
@@ -68,7 +68,7 @@ describe('RepuestoService', () => {
     req.flush(repuesto);
   });
 
-  it('entregar() should PUT to mark a repuesto as delivered', () => {
+  it('entregar() debe hacer PUT para marcar un repuesto como entregado', () => {
     const entregado: Repuesto = { ...repuesto, estado: 'Entregado' };
     service.entregar(1).subscribe((res) => expect(res).toEqual(entregado));
 

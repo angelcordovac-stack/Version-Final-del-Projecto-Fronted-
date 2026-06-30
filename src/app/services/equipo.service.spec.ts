@@ -20,11 +20,11 @@ describe('EquipoService', () => {
 
   afterEach(() => httpMock.verify());
 
-  it('should be created', () => {
+  it('debe ser creado', () => {
     expect(service).toBeTruthy();
   });
 
-  it('getAll() should GET the list of equipos', () => {
+  it('getAll() debe obtener la lista de equipos', () => {
     const mock: Equipo[] = [
       { codigoEquipo: 'PC-001', marcaModelo: 'Dell Optiplex', areaUbicacion: 'Ventas', responsable: 'Ana' },
     ];

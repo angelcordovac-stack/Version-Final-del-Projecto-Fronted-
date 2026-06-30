@@ -30,7 +30,7 @@ describe('authGuard', () => {
     });
   });
 
-  it('should allow access when the user is logged in', () => {
+  it('debe permitir acceso cuyo el usuario está autenticado', () => {
     const authService = TestBed.inject(AuthService);
     spyOn(authService, 'isLoggedIn').and.returnValue(true);
 
@@ -40,7 +40,7 @@ describe('authGuard', () => {
     expect(routerSpy.navigate).not.toHaveBeenCalled();
   });
 
-  it('should block access and redirect to /login when the user is not logged in', () => {
+  it('debe bloquear acceso y redirigir a /login cuando el usuario no está autenticado', () => {
     const authService = TestBed.inject(AuthService);
     const toastService = TestBed.inject(ToastService);
     spyOn(authService, 'isLoggedIn').and.returnValue(false);

@@ -25,16 +25,16 @@ describe('Home', () => {
     component.ngOnDestroy();
   });
 
-  it('should create', () => {
+  it('debe crear el componente', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should start on the first slide and first testimonio', () => {
+  it('should start on the first slide y first testimonio', () => {
     expect(component.currentIndex).toBe(0);
     expect(component.testimonioIndex).toBe(0);
   });
 
-  it('nextSlide() should advance and wrap around to the first slide', () => {
+  it('nextSlide() should advance y wrap around to the first slide', () => {
     const total = component.slides.length;
     for (let i = 0; i < total; i++) {
       component.nextSlide();
@@ -42,7 +42,7 @@ describe('Home', () => {
     expect(component.currentIndex).toBe(0);
   });
 
-  it('prevSlide() should go back and wrap around to the last slide', () => {
+  it('prevSlide() should go back y wrap around to the last slide', () => {
     component.prevSlide();
     expect(component.currentIndex).toBe(component.slides.length - 1);
   });
@@ -62,7 +62,7 @@ describe('Home', () => {
     expect(component.testimonioIndex).toBe(total - 1);
   });
 
-  it('goToLogin() should navigate to /login', () => {
+  it('goToLogin() debe navegar to /login', () => {
     const router = TestBed.inject(Router);
     const navigateSpy = spyOn(router, 'navigate');
 
@@ -71,7 +71,7 @@ describe('Home', () => {
     expect(navigateSpy).toHaveBeenCalledWith(['/login']);
   });
 
-  it('ngOnDestroy() should clear the slider intervals', () => {
+  it('ngOnDestroy() debe limpiar the slider intervals', () => {
     spyOn(window, 'clearInterval').and.callThrough();
     component.ngOnDestroy();
     expect(window.clearInterval).toHaveBeenCalled();

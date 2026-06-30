@@ -33,18 +33,18 @@ describe('AuthService', () => {
     localStorage.clear();
   });
 
-  it('should be created', () => {
+  it('debe ser creado', () => {
     expect(service).toBeTruthy();
   });
 
-  it('should start as logged out when there is no session in localStorage', () => {
+  it('debe comenzar como desautenticado cuyo no hay sesión en localStorage', () => {
     expect(service.isLoggedIn()).toBeFalse();
   });
 
   describe('login()', () => {
     const payload: LoginRequest = { correo: 'juan@test.com', password: '123456' };
 
-    it('should POST to /usuarios/login with the credentials', () => {
+    it('debe hacer POST a /usuarios/login con las credenciales', () => {
       service.login(payload).subscribe();
 
       const req = httpMock.expectOne(`${environment.url}/usuarios/login`);
@@ -53,7 +53,7 @@ describe('AuthService', () => {
       req.flush(loginResponse);
     });
 
-    it('should store the session, access token and refresh token on success', () => {
+    it('debe almacenar la sesión, token de acceso y token de actualización al tener éxito', () => {
       service.login(payload).subscribe();
 
       const req = httpMock.expectOne(`${environment.url}/usuarios/login`);
@@ -64,7 +64,7 @@ describe('AuthService', () => {
       expect(localStorage.getItem('refresh_token')).toBe('fake-refresh-token');
     });
 
-    it('should set isLoggedIn to true on a successful login', () => {
+    it('debe establecer isLoggedIn a verdadero en un login exitoso', () => {
       service.login(payload).subscribe();
 
       const req = httpMock.expectOne(`${environment.url}/usuarios/login`);
@@ -73,7 +73,7 @@ describe('AuthService', () => {
       expect(service.isLoggedIn()).toBeTrue();
     });
 
-    it('should not store tokens if the backend does not return them', () => {
+    it('no debe almacenar tokens si el backend no los retorna', () => {
       const sinTokens: LoginResponse = { ...loginResponse, token: undefined, refreshToken: undefined };
       service.login(payload).subscribe();
 
@@ -86,7 +86,7 @@ describe('AuthService', () => {
       expect(service.isLoggedIn()).toBeTrue();
     });
 
-    it('should not modify localStorage when the login request fails', () => {
+    it('no debe modificar localStorage cuyo la solicitud de login falla', () => {
       service.login(payload).subscribe({ error: () => {} });
 
       const req = httpMock.expectOne(`${environment.url}/usuarios/login`);
@@ -98,7 +98,7 @@ describe('AuthService', () => {
   });
 
   describe('refreshAccessToken()', () => {
-    it('should POST the refresh token and return the new tokens', () => {
+    it('debe hacer POST al token de actualización y retornar los nuevos tokens', () => {
       const refreshResponse: RefreshResponse = { token: 'new-token', refreshToken: 'new-refresh' };
 
       service.refreshAccessToken('old-refresh').subscribe((res) => {
@@ -113,7 +113,7 @@ describe('AuthService', () => {
   });
 
   describe('logout()', () => {
-    it('should notify the backend and clear localStorage when there is a refresh token', () => {
+    it('debe notificar al backend y limpiar localStorage cuyo hay un token de actualización', () => {
       localStorage.setItem('user_session', JSON.stringify(loginResponse));
       localStorage.setItem('user_token', 'fake-token');
       localStorage.setItem('refresh_token', 'fake-refresh-token');
@@ -131,7 +131,7 @@ describe('AuthService', () => {
       expect(service.isLoggedIn()).toBeFalse();
     });
 
-    it('should not call the backend when there is no refresh token, but should still clear local state', () => {
+    it('no debe llamar al backend cuyo no hay token de actualización, pero debe limpiar el estado local', () => {
       localStorage.setItem('user_session', JSON.stringify(loginResponse));
 
       service.logout();
@@ -141,7 +141,7 @@ describe('AuthService', () => {
       expect(service.isLoggedIn()).toBeFalse();
     });
 
-    it('should swallow backend errors on logout (best-effort)', () => {
+    it('debe ignorar los errores del backend en logout (mejor esfuerzo)', () => {
       localStorage.setItem('refresh_token', 'fake-refresh-token');
 
       expect(() => service.logout()).not.toThrow();

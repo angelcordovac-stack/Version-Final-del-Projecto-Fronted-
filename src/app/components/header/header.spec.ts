@@ -23,16 +23,16 @@ describe('Header', () => {
     await fixture.whenStable();
   });
 
-  it('should create', () => {
+  it('debe crear el componente', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should report not logged in and have no user name when there is no session', () => {
+  it('debe reportar que no está autenticado y no tener nombre de usuario cuyo no hay sesión', () => {
     expect(component.isLoggedIn()).toBeFalse();
     expect(component.userName()).toBeNull();
   });
 
-  it('should report the user name from the session when logged in', () => {
+  it('debe reportar el nombre de usuario de la sesión cuyo está autenticado', () => {
     const authService = TestBed.inject(AuthService);
     const sessionService = TestBed.inject(SessionService);
     // Header captura `this.authService.isLoggedIn` (la señal) en el momento de su
@@ -50,7 +50,7 @@ describe('Header', () => {
     expect(component.userName()).toBe('Carlos Mendez');
   });
 
-  it('logout() should call AuthService.logout(), show a toast and navigate to home', () => {
+  it('logout() debe llamar AuthService.logout(), mostrar un toast y navegar al inicio', () => {
     const authService = TestBed.inject(AuthService);
     const toastService = TestBed.inject(ToastService);
     const router = TestBed.inject(Router);
@@ -66,7 +66,7 @@ describe('Header', () => {
     expect(navigateSpy).toHaveBeenCalledWith(['/']);
   });
 
-  it('should start with the mobile menu closed', () => {
+  it('debe comenzar con el menú móvil cerrado', () => {
     expect(component.menuOpen).toBeFalse();
   });
 });

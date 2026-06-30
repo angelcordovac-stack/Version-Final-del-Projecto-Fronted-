@@ -28,11 +28,11 @@ describe('IncidenciaService', () => {
 
   afterEach(() => httpMock.verify());
 
-  it('should be created', () => {
+  it('debe ser creado', () => {
     expect(service).toBeTruthy();
   });
 
-  it('getAll() should GET all incidencias', () => {
+  it('getAll() debe obtener todas las incidencias', () => {
     service.getAll().subscribe((res) => expect(res).toEqual([incidencia]));
 
     const req = httpMock.expectOne(baseUrl);
@@ -40,7 +40,7 @@ describe('IncidenciaService', () => {
     req.flush([incidencia]);
   });
 
-  it('getById() should GET a single incidencia by id', () => {
+  it('getById() debe obtener una incidencia por id', () => {
     service.getById(1).subscribe((res) => expect(res).toEqual(incidencia));
 
     const req = httpMock.expectOne(`${baseUrl}/1`);
@@ -48,7 +48,7 @@ describe('IncidenciaService', () => {
     req.flush(incidencia);
   });
 
-  it('getPorTecnico() should GET incidencias filtered by technician id', () => {
+  it('getPorTecnico() debe obtener incidencias filtradas por id de técnico', () => {
     service.getPorTecnico(7).subscribe((res) => expect(res).toEqual([incidencia]));
 
     const req = httpMock.expectOne(`${baseUrl}/tecnico/7`);
@@ -56,7 +56,7 @@ describe('IncidenciaService', () => {
     req.flush([incidencia]);
   });
 
-  it('crear() should POST a new incidencia', () => {
+  it('crear() debe hacer POST una nueva incidencia', () => {
     const nueva: Partial<Incidencia> = { codigoEquipo: 'PC-002', descripcionProblema: 'No tiene red' };
 
     service.crear(nueva).subscribe((res) => expect(res).toEqual(incidencia));
@@ -67,7 +67,7 @@ describe('IncidenciaService', () => {
     req.flush(incidencia);
   });
 
-  it('asignar() should PUT the assigned technician', () => {
+  it('asignar() debe hacer PUT con el técnico asignado', () => {
     service.asignar(1, 7).subscribe((res) => expect(res).toEqual(incidencia));
 
     const req = httpMock.expectOne(`${baseUrl}/1/asignar`);
@@ -76,7 +76,7 @@ describe('IncidenciaService', () => {
     req.flush(incidencia);
   });
 
-  it('solucionar() should PUT the tipoSolucion', () => {
+  it('solucionar() debe hacer PUT con el tipo de solución', () => {
     service.solucionar(1, 'Se reemplazo la fuente de poder').subscribe((res) => expect(res).toEqual(incidencia));
 
     const req = httpMock.expectOne(`${baseUrl}/1/solucionar`);
@@ -85,7 +85,7 @@ describe('IncidenciaService', () => {
     req.flush(incidencia);
   });
 
-  it('historialEquipo() should GET the incident history for an equipo', () => {
+  it('historialEquipo() debe obtener el historial de incidencias para un equipo', () => {
     service.historialEquipo('PC-001').subscribe((res) => expect(res).toEqual([incidencia]));
 
     const req = httpMock.expectOne(`${baseUrl}/equipo/PC-001`);

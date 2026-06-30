@@ -25,27 +25,27 @@ describe('InicioSesion', () => {
     await fixture.whenStable();
   });
 
-  it('should create', () => {
+  it('debe crear el componente', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should build the form as invalid by default', () => {
+  it('debe construir el formulario como inválido por defecto', () => {
     expect(component.loginForm.invalid).toBeTrue();
     expect(component.correo?.hasError('required')).toBeTrue();
     expect(component.password?.hasError('required')).toBeTrue();
   });
 
-  it('should mark correo as invalid when it is not a valid email', () => {
+  it('debe marcar correo como inválido cuyo no es un email válido', () => {
     component.correo?.setValue('no-es-un-correo');
     expect(component.correo?.hasError('email')).toBeTrue();
   });
 
-  it('should be valid once correo and password are filled correctly', () => {
+  it('debe ser válido cuyo correo y contraseña están llenos correctamente', () => {
     component.loginForm.setValue({ correo: 'ana@test.com', password: '123456' });
     expect(component.loginForm.valid).toBeTrue();
   });
 
-  it('onSubmit() should not call AuthService.login() when the form is invalid', () => {
+  it('onSubmit() no debe llamar AuthService.login() cuyo el formulario es inválido', () => {
     const authService = TestBed.inject(AuthService);
     const loginSpy = spyOn(authService, 'login');
 
@@ -54,7 +54,7 @@ describe('InicioSesion', () => {
     expect(loginSpy).not.toHaveBeenCalled();
   });
 
-  it('onSubmit() should login, show a success toast and navigate to /dashboard', () => {
+  it('onSubmit() debe iniciar sesión, mostrar un toast de éxito y navegar a /dashboard', () => {
     const authService = TestBed.inject(AuthService);
     const toastService = TestBed.inject(ToastService);
     const router = TestBed.inject(Router);
@@ -71,7 +71,7 @@ describe('InicioSesion', () => {
     expect(navigateSpy).toHaveBeenCalledWith(['/dashboard']);
   });
 
-  it('onSubmit() should show a specific message when the server cannot be reached (status 0)', () => {
+  it('onSubmit() debe mostrar un mensaje específico cuyo el servidor no puede ser alcanzado (estado 0)', () => {
     const authService = TestBed.inject(AuthService);
     const toastService = TestBed.inject(ToastService);
     spyOn(authService, 'login').and.returnValue(
@@ -87,7 +87,7 @@ describe('InicioSesion', () => {
     expect(component.isLoading).toBeFalse();
   });
 
-  it('onSubmit() should show an invalid credentials message on a 401', () => {
+  it('onSubmit() debe mostrar un mensaje de credenciales inválidas en un 401', () => {
     const authService = TestBed.inject(AuthService);
     spyOn(authService, 'login').and.returnValue(
       throwError(() => new HttpErrorResponse({ status: 401 }))
@@ -99,7 +99,7 @@ describe('InicioSesion', () => {
     expect(component.errorMessage).toBe('Correo o contrasena incorrectos.');
   });
 
-  it('onSubmit() should reset isLoading to false after a failed login', () => {
+  it('onSubmit() debe restablecer isLoading a falso después de un login fallido', () => {
     const authService = TestBed.inject(AuthService);
     spyOn(authService, 'login').and.returnValue(
       throwError(() => new HttpErrorResponse({ status: 401 }))

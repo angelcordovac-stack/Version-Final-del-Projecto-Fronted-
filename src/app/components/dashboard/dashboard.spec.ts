@@ -31,11 +31,11 @@ describe('Dashboard', () => {
     component = fixture.componentInstance;
   });
 
-  it('should create', () => {
+  it('debe crear el componente', () => {
     expect(component).toBeTruthy();
   });
 
-  it('ngOnInit() should load the user and build the menu for a JEFE', () => {
+  it('ngOnInit() should load the user y build the menu for a JEFE', () => {
     const sessionService = TestBed.inject(SessionService);
     spyOn(sessionService, 'getInfoSession').and.returnValue(usuarioJefe);
 
@@ -59,7 +59,7 @@ describe('Dashboard', () => {
     expect(component.menuItems.length).toBe(4);
   });
 
-  it('ngOnInit() should build an empty menu when there is no session', () => {
+  it('ngOnInit() should build an empty menu cuyo there is no session', () => {
     const sessionService = TestBed.inject(SessionService);
     spyOn(sessionService, 'getInfoSession').and.returnValue(null);
 
@@ -73,7 +73,7 @@ describe('Dashboard', () => {
     expect(component.userName).toBe('Usuario');
   });
 
-  it('userName getter should return the user names when available', () => {
+  it('userName getter debe retornar the user names cuyo available', () => {
     const sessionService = TestBed.inject(SessionService);
     spyOn(sessionService, 'getInfoSession').and.returnValue(usuarioJefe);
     component.ngOnInit();
@@ -81,7 +81,7 @@ describe('Dashboard', () => {
     expect(component.userName).toBe('Ana Jefa');
   });
 
-  it('perfilLabel getter should return the role description', () => {
+  it('perfilLabel getter debe retornar the role description', () => {
     const sessionService = TestBed.inject(SessionService);
     spyOn(sessionService, 'getInfoSession').and.returnValue(usuarioJefe);
     component.ngOnInit();
@@ -89,7 +89,7 @@ describe('Dashboard', () => {
     expect(component.perfilLabel).toBe('Jefe');
   });
 
-  it('logout() should call AuthService.logout(), show a toast and navigate to /login', () => {
+  it('logout() debe llamar AuthService.logout(), show a toast y navigate to /login', () => {
     const authService = TestBed.inject(AuthService);
     const toastService = TestBed.inject(ToastService);
     const router = TestBed.inject(Router);

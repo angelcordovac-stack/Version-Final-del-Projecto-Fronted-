@@ -20,11 +20,11 @@ describe('TecnicoService', () => {
 
   afterEach(() => httpMock.verify());
 
-  it('should be created', () => {
+  it('debe ser creado', () => {
     expect(service).toBeTruthy();
   });
 
-  it('getDisponibles() should GET the list of available technicians', () => {
+  it('getDisponibles() debe obtener la lista de técnicos disponibles', () => {
     const mock: TecnicoListado[] = [
       { idUsuario: 1, nombre: 'Luis Vargas', especialidad: 'Hardware', disponibilidad: true, maxIncidencias: 5 },
     ];

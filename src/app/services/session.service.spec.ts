@@ -13,20 +13,20 @@ describe('SessionService', () => {
 
   afterEach(() => localStorage.clear());
 
-  it('should be created', () => {
+  it('debe ser creado', () => {
     expect(service).toBeTruthy();
   });
 
-  it('should return null when there is no session stored', () => {
+  it('debe retornar null cuando no hay sesión almacenada', () => {
     expect(service.getInfoSession()).toBeNull();
   });
 
-  it('should return null when the stored session is not valid JSON', () => {
+  it('debe retornar null cuando la sesión almacenada no es JSON válido', () => {
     localStorage.setItem('user_session', '{invalid-json');
     expect(service.getInfoSession()).toBeNull();
   });
 
-  it('should map idPerfil 1 to JEFE', () => {
+  it('debe mapear idPerfil 1 a JEFE', () => {
     localStorage.setItem(
       'user_session',
       JSON.stringify({ idUsuario: 1, nombreCompleto: 'Ana Jefa', correo: 'ana@test.com', idPerfil: 1 })
@@ -38,7 +38,7 @@ describe('SessionService', () => {
     expect(info?.perfil).toBe('Jefe');
   });
 
-  it('should map idPerfil 2 to TECNICO', () => {
+  it('debe mapear idPerfil 2 a TECNICO', () => {
     localStorage.setItem(
       'user_session',
       JSON.stringify({ idUsuario: 2, nombreCompleto: 'Luis Tecnico', correo: 'luis@test.com', idPerfil: 2 })
@@ -49,7 +49,7 @@ describe('SessionService', () => {
     expect(info?.rol).toEqual({ codigo: 'TECNICO', descripcion: 'Técnico' });
   });
 
-  it('should map idPerfil 3 to SISTEMAS', () => {
+  it('debe mapear idPerfil 3 a SISTEMAS', () => {
     localStorage.setItem(
       'user_session',
       JSON.stringify({ idUsuario: 3, nombreCompleto: 'Sara Sistemas', correo: 'sara@test.com', idPerfil: 3 })
@@ -60,7 +60,7 @@ describe('SessionService', () => {
     expect(info?.rol).toEqual({ codigo: 'SISTEMAS', descripcion: 'Sistemas' });
   });
 
-  it('should fall back to an UNKNOWN role for an unrecognized idPerfil', () => {
+  it('debe retroceder a un rol UNKNOWN para un idPerfil no reconocido', () => {
     localStorage.setItem(
       'user_session',
       JSON.stringify({ idUsuario: 9, nombreCompleto: 'Sin Rol', correo: 'x@test.com', idPerfil: 99 })
@@ -72,7 +72,7 @@ describe('SessionService', () => {
     expect(info?.perfil).toBe('Perfil 99');
   });
 
-  it('should expose backwards-compatible fields (names / personaId)', () => {
+  it('debe exponer campos compatibles hacia atrás (names / personaId)', () => {
     localStorage.setItem(
       'user_session',
       JSON.stringify({ idUsuario: 5, nombreCompleto: 'Carlos Mendez', correo: 'carlos@test.com', idPerfil: 1 })

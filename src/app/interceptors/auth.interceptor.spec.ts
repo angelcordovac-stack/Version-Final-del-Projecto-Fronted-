@@ -33,7 +33,7 @@ describe('authInterceptor', () => {
     localStorage.clear();
   });
 
-  it('should attach the Authorization header when there is a token', () => {
+  it('debe adjuntar el encabezado Authorization cuyo hay un token', () => {
     localStorage.setItem('user_token', 'mi-token');
 
     http.get(`${environment.url}/api/incidencias`).subscribe();
@@ -43,7 +43,7 @@ describe('authInterceptor', () => {
     req.flush([]);
   });
 
-  it('should not attach an Authorization header when there is no token', () => {
+  it('no debe adjuntar un encabezado Authorization cuyo no hay token', () => {
     http.get(`${environment.url}/api/incidencias`).subscribe();
 
     const req = httpMock.expectOne(`${environment.url}/api/incidencias`);
@@ -51,7 +51,7 @@ describe('authInterceptor', () => {
     req.flush([]);
   });
 
-  it('should not attach a token on public endpoints (login)', () => {
+  it('no debe adjuntar un token en puntos finales públicos (login)', () => {
     localStorage.setItem('user_token', 'mi-token');
 
     http.post(`${environment.url}/usuarios/login`, {}).subscribe();
@@ -61,7 +61,7 @@ describe('authInterceptor', () => {
     req.flush({});
   });
 
-  it('should refresh the token and retry the request after a 401', () => {
+  it('debe actualizar el token e intentar nuevamente la solicitud después de un 401', () => {
     localStorage.setItem('user_token', 'token-vencido');
     localStorage.setItem('refresh_token', 'mi-refresh');
 
@@ -83,7 +83,7 @@ describe('authInterceptor', () => {
     expect(routerSpy.navigate).not.toHaveBeenCalled();
   });
 
-  it('should logout and redirect to /login when there is no refresh token and a 401 happens', () => {
+  it('debe cerrar sesión y redirigir a /login cuando no hay token de actualización y ocurre un 401', () => {
     localStorage.setItem('user_token', 'token-vencido');
 
     http.get(`${environment.url}/api/incidencias`).subscribe({ error: () => {} });
@@ -95,7 +95,7 @@ describe('authInterceptor', () => {
     expect(routerSpy.navigate).toHaveBeenCalledWith(['/login']);
   });
 
-  it('should logout and redirect to /login when the refresh request itself fails', () => {
+  it('debe cerrar sesión y redirigir a /login cuando la solicitud de actualización falla', () => {
     localStorage.setItem('user_token', 'token-vencido');
     localStorage.setItem('refresh_token', 'refresh-vencido');
 
@@ -115,7 +115,7 @@ describe('authInterceptor', () => {
     expect(routerSpy.navigate).toHaveBeenCalledWith(['/login']);
   });
 
-  it('should propagate non-401 errors without trying to refresh the token', () => {
+  it('debe propagar errores no-401 sin intentar actualizar el token', () => {
     let errorRecibido: any = null;
 
     http.get(`${environment.url}/api/incidencias`).subscribe({

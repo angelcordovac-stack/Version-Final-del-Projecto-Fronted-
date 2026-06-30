@@ -30,12 +30,12 @@ describe('GestionIncidencias', () => {
     component = fixture.componentInstance;
   });
 
-  it('should create', () => {
+  it('debe crear el componente', () => {
     expect(component).toBeTruthy();
   });
 
   describe('cargar()', () => {
-    it('should call getAll() for non technical roles', () => {
+    it('debe llamar getAll() for non technical roles', () => {
       const svc = TestBed.inject(IncidenciaService);
       const sessionService = TestBed.inject(SessionService);
       spyOn(sessionService, 'getInfoSession').and.returnValue({
@@ -54,7 +54,7 @@ describe('GestionIncidencias', () => {
       expect(component.isLoading).toBeFalse();
     });
 
-    it('should call getPorTecnico() for the TECNICO role', () => {
+    it('debe llamar getPorTecnico() for the TECNICO role', () => {
       const svc = TestBed.inject(IncidenciaService);
       const sessionService = TestBed.inject(SessionService);
       spyOn(sessionService, 'getInfoSession').and.returnValue({
@@ -69,7 +69,7 @@ describe('GestionIncidencias', () => {
       expect(getPorTecnicoSpy).toHaveBeenCalledWith(7);
     });
 
-    it('should show a toast on error', () => {
+    it('debe mostrar a toast on error', () => {
       const svc = TestBed.inject(IncidenciaService);
       const toast = TestBed.inject(ToastService);
       spyOn(svc, 'getAll').and.returnValue(throwError(() => new Error('fail')));
@@ -85,19 +85,19 @@ describe('GestionIncidencias', () => {
   describe('incidenciasFiltradas', () => {
     beforeEach(() => (component.incidencias = incidencias));
 
-    it('should return all incidencias when the filter is TODAS', () => {
+    it('debe retornar all incidencias cuyo the filter is TODAS', () => {
       component.filtroEstado = 'TODAS';
       expect(component.incidenciasFiltradas).toEqual(incidencias);
     });
 
-    it('should filter by estado', () => {
+    it('debe filtrar by estado', () => {
       component.filtroEstado = 'Pendiente';
       expect(component.incidenciasFiltradas).toEqual([incidencias[0]]);
     });
   });
 
   describe('guardarCrear()', () => {
-    it('should collect validation errors and not call the service when the form is incomplete', () => {
+    it('should collect validation errors y not call the service cuyo the form is incomplete', () => {
       const svc = TestBed.inject(IncidenciaService);
       const crearSpy = spyOn(svc, 'crear');
 
@@ -122,7 +122,7 @@ describe('GestionIncidencias', () => {
       expect(component.erroresCrear).toContain('La descripción no puede superar los 500 caracteres.');
     });
 
-    it('should create the incidencia, show a toast, close the modal and reload', () => {
+    it('debe crear el componente the incidencia, show a toast, close the modal y reload', () => {
       const svc = TestBed.inject(IncidenciaService);
       const sessionService = TestBed.inject(SessionService);
       const toast = TestBed.inject(ToastService);
@@ -160,7 +160,7 @@ describe('GestionIncidencias', () => {
       { idUsuario: 7, nombre: 'Luis', especialidad: 'HW', disponibilidad: true, maxIncidencias: 5 },
     ];
 
-    it('abrirAsignar() should load the available technicians and open the modal', () => {
+    it('abrirAsignar() should load the available technicians y open the modal', () => {
       const tecnicoSvc = TestBed.inject(TecnicoService);
       spyOn(tecnicoSvc, 'getDisponibles').and.returnValue(of(tecnicos));
 
@@ -171,7 +171,7 @@ describe('GestionIncidencias', () => {
       expect(component.showAsignarModal).toBeTrue();
     });
 
-    it('confirmarAsignar() should warn when no technician is selected', () => {
+    it('confirmarAsignar() should warn cuyo no technician is selected', () => {
       const svc = TestBed.inject(IncidenciaService);
       const toast = TestBed.inject(ToastService);
       const asignarSpy = spyOn(svc, 'asignar');
@@ -185,7 +185,7 @@ describe('GestionIncidencias', () => {
       expect(toastSpy).toHaveBeenCalledWith('Selecciona un tecnico.', 'warning');
     });
 
-    it('confirmarAsignar() should assign the technician, show a toast and reload', () => {
+    it('confirmarAsignar() should assign the technician, show a toast y reload', () => {
       const svc = TestBed.inject(IncidenciaService);
       const toast = TestBed.inject(ToastService);
       const asignarSpy = spyOn(svc, 'asignar').and.returnValue(of(incidencias[0]));
@@ -203,7 +203,7 @@ describe('GestionIncidencias', () => {
   });
 
   describe('solucionar()', () => {
-    it('confirmarSolucionar() should warn when no solution text was provided', () => {
+    it('confirmarSolucionar() should warn cuyo no solution text was provided', () => {
       const svc = TestBed.inject(IncidenciaService);
       const solucionarSpy = spyOn(svc, 'solucionar');
 
@@ -214,7 +214,7 @@ describe('GestionIncidencias', () => {
       expect(solucionarSpy).not.toHaveBeenCalled();
     });
 
-    it('confirmarSolucionar() should mark the incidencia as solved and reload', () => {
+    it('confirmarSolucionar() debe marcar the incidencia as solved y reload', () => {
       const svc = TestBed.inject(IncidenciaService);
       const toast = TestBed.inject(ToastService);
       const solucionarSpy = spyOn(svc, 'solucionar').and.returnValue(of(incidencias[0]));

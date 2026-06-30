@@ -20,11 +20,11 @@ describe('DiccionarioFallasService', () => {
 
   afterEach(() => httpMock.verify());
 
-  it('should be created', () => {
+  it('debe ser creado', () => {
     expect(service).toBeTruthy();
   });
 
-  it('getAll() should GET the list of fallas', () => {
+  it('getAll() debe obtener la lista de fallas', () => {
     const mock: DiccionarioFalla[] = [
       { idFalla: 1, problemaComun: 'No prende', solucionSugerida: 'Revisar fuente de poder' },
     ];
@@ -36,7 +36,7 @@ describe('DiccionarioFallasService', () => {
     req.flush(mock);
   });
 
-  it('buscar() should GET with the keyword as a query param', () => {
+  it('buscar() debe obtener con la palabra clave como parámetro de consulta', () => {
     const mock: DiccionarioFalla[] = [];
 
     service.buscar('pantalla azul').subscribe((res) => expect(res).toEqual(mock));
@@ -46,7 +46,7 @@ describe('DiccionarioFallasService', () => {
     req.flush(mock);
   });
 
-  it('registrar() should POST the new falla', () => {
+  it('registrar() debe hacer POST la nueva falla', () => {
     const nueva: DiccionarioFalla = {
       problemaComun: 'No conecta a wifi',
       solucionSugerida: 'Reiniciar el adaptador de red',
