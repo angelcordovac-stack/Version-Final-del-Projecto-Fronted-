@@ -22,14 +22,14 @@ describe('ToastContainer', () => {
     expect(component).toBeTruthy();
   });
 
-  it('getToastClass() should map each toast type to its bootstrap class', () => {
+  it('getToastClass() debe mapear cada tipo de toast a su clase de bootstrap', () => {
     expect(component.getToastClass('success')).toBe('bg-success text-light');
     expect(component.getToastClass('danger')).toBe('bg-danger text-light');
     expect(component.getToastClass('warning')).toBe('bg-warning text-light');
     expect(component.getToastClass('info')).toBe('bg-info text-light');
   });
 
-  it('should expose the toasts from the service for the template to render', () => {
+  it('debe exponer los toasts del servicio para que el template los renderice', () => {
     const toastService = TestBed.inject(ToastService);
     toastService.show('Mensaje 1', 'success');
     toastService.show('Mensaje 2', 'danger');

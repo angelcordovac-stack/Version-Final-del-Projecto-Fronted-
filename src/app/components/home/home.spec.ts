@@ -29,12 +29,12 @@ describe('Home', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should start on the first slide y first testimonio', () => {
+  it('debe iniciar en el primer slide y el primer testimonio', () => {
     expect(component.currentIndex).toBe(0);
     expect(component.testimonioIndex).toBe(0);
   });
 
-  it('nextSlide() should advance y wrap around to the first slide', () => {
+  it('nextSlide() debe avanzar y volver al primer slide al llegar al final', () => {
     const total = component.slides.length;
     for (let i = 0; i < total; i++) {
       component.nextSlide();
@@ -42,17 +42,17 @@ describe('Home', () => {
     expect(component.currentIndex).toBe(0);
   });
 
-  it('prevSlide() should go back y wrap around to the last slide', () => {
+  it('prevSlide() debe retroceder y volver al último slide al llegar al inicio', () => {
     component.prevSlide();
     expect(component.currentIndex).toBe(component.slides.length - 1);
   });
 
-  it('goToSlide() should jump to the given index', () => {
+  it('goToSlide() debe saltar al índice indicado', () => {
     component.goToSlide(2);
     expect(component.currentIndex).toBe(2);
   });
 
-  it('nextTestimonio() / prevTestimonio() should cycle through testimonios', () => {
+  it('nextTestimonio() / prevTestimonio() deben recorrer los testimonios', () => {
     const total = component.testimonios.length;
     component.nextTestimonio();
     expect(component.testimonioIndex).toBe(1);
@@ -62,7 +62,7 @@ describe('Home', () => {
     expect(component.testimonioIndex).toBe(total - 1);
   });
 
-  it('goToLogin() debe navegar to /login', () => {
+  it('goToLogin() debe navegar a /login', () => {
     const router = TestBed.inject(Router);
     const navigateSpy = spyOn(router, 'navigate');
 
@@ -71,7 +71,7 @@ describe('Home', () => {
     expect(navigateSpy).toHaveBeenCalledWith(['/login']);
   });
 
-  it('ngOnDestroy() debe limpiar the slider intervals', () => {
+  it('ngOnDestroy() debe limpiar los intervalos del slider', () => {
     spyOn(window, 'clearInterval').and.callThrough();
     component.ngOnDestroy();
     expect(window.clearInterval).toHaveBeenCalled();

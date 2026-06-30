@@ -31,7 +31,7 @@ describe('MantenimientoUsuarios', () => {
   });
 
   describe('ngOnInit() / cargarUsuarios()', () => {
-    it('debe construir el formulario y load the usuarios on success', () => {
+    it('debe construir el formulario y cargar los usuarios al tener éxito', () => {
       const svc = TestBed.inject(UsuarioService);
       spyOn(svc, 'getUsuarios').and.returnValue(of(usuarios));
 
@@ -42,7 +42,7 @@ describe('MantenimientoUsuarios', () => {
       expect(component.isLoading).toBeFalse();
     });
 
-    it('debe mostrar a toast y stop loading on error', () => {
+    it('debe mostrar un toast y detener la carga en caso de error', () => {
       const svc = TestBed.inject(UsuarioService);
       const toast = TestBed.inject(ToastService);
       spyOn(svc, 'getUsuarios').and.returnValue(throwError(() => new Error('fail')));
@@ -58,18 +58,18 @@ describe('MantenimientoUsuarios', () => {
   describe('formulario', () => {
     beforeEach(() => component.ngOnInit());
 
-    it('password should be required cuyo creating a new user', () => {
+    it('password debe ser obligatorio al crear un nuevo usuario', () => {
       component.abrirNuevo();
       expect(component.usuarioForm.get('password')?.hasError('required')).toBeTrue();
     });
 
-    it('password should be optional cuyo editing an existing user', () => {
+    it('password debe ser opcional al editar un usuario existente', () => {
       component.abrirEditar(usuarios[0]);
       component.usuarioForm.get('password')?.setValue('');
       expect(component.usuarioForm.get('password')?.hasError('required')).toBeFalse();
     });
 
-    it('abrirEditar() should patch the form with the usuario data', () => {
+    it('abrirEditar() debe rellenar el formulario con los datos del usuario', () => {
       component.abrirEditar(usuarios[0]);
 
       expect(component.isEditing).toBeTrue();
@@ -79,7 +79,7 @@ describe('MantenimientoUsuarios', () => {
       expect(component.showModal).toBeTrue();
     });
 
-    it('abrirNuevo() debe restablecer isEditing y open an empty form', () => {
+    it('abrirNuevo() debe restablecer isEditing y abrir un formulario vacío', () => {
       component.abrirEditar(usuarios[0]);
       component.abrirNuevo();
 
@@ -88,13 +88,13 @@ describe('MantenimientoUsuarios', () => {
       expect(component.usuarioForm.value.nombreCompleto).toBe('');
     });
 
-    it('nombreCompleto should reject characters other than letters y spaces', () => {
+    it('nombreCompleto debe rechazar caracteres que no sean letras y espacios', () => {
       component.abrirNuevo();
       component.usuarioForm.get('nombreCompleto')?.setValue('Ana123');
       expect(component.usuarioForm.get('nombreCompleto')?.hasError('pattern')).toBeTrue();
     });
 
-    it('mensajeError() debe retornar human readable messages', () => {
+    it('mensajeError() debe retornar mensajes legibles para el usuario', () => {
       component.abrirNuevo();
       const correo = component.usuarioForm.get('correo')!;
       correo.setValue('');
@@ -105,7 +105,7 @@ describe('MantenimientoUsuarios', () => {
       expect(component.mensajeError('correo')).toBe('Ingresa un correo válido (ej: usuario@dominio.com).');
     });
 
-    it('campoInvalido() should be true only cuyo the control is invalid y touched', () => {
+    it('campoInvalido() debe ser verdadero solo cuando el control es inválido y fue tocado', () => {
       component.abrirNuevo();
       const correo = component.usuarioForm.get('correo')!;
       correo.setValue('');
@@ -122,12 +122,12 @@ describe('MantenimientoUsuarios', () => {
       component.usuarios = usuarios;
     });
 
-    it('debe retornar all usuarios cuyo there is no filter', () => {
+    it('debe retornar todos los usuarios cuando no hay filtro', () => {
       component.filtroBusqueda = '';
       expect(component.usuariosFiltrados).toEqual(usuarios);
     });
 
-    it('debe filtrar by nombreCompleto, correo or perfil', () => {
+    it('debe filtrar por nombreCompleto, correo o perfil', () => {
       component.filtroBusqueda = 'luis';
       expect(component.usuariosFiltrados).toEqual([usuarios[1]]);
 
@@ -139,7 +139,7 @@ describe('MantenimientoUsuarios', () => {
   describe('guardar()', () => {
     beforeEach(() => component.ngOnInit());
 
-    it('debe marcar all fields as touched y not save cuyo the form is invalid', () => {
+    it('debe marcar todos los campos como tocados y no guardar cuando el formulario es inválido', () => {
       const svc = TestBed.inject(UsuarioService);
       const registrarSpy = spyOn(svc, 'registrarUsuario');
       component.abrirNuevo();
@@ -150,7 +150,7 @@ describe('MantenimientoUsuarios', () => {
       expect(component.usuarioForm.get('nombreCompleto')?.touched).toBeTrue();
     });
 
-    it('should register a new usuario cuyo the form is valid y not editing', () => {
+    it('debe registrar un nuevo usuario cuando el formulario es válido y no se está editando', () => {
       const svc = TestBed.inject(UsuarioService);
       const toast = TestBed.inject(ToastService);
       const registrarSpy = spyOn(svc, 'registrarUsuario').and.returnValue(of(usuarios[0]));
@@ -176,7 +176,7 @@ describe('MantenimientoUsuarios', () => {
       expect(component.showModal).toBeFalse();
     });
 
-    it('debe actualizar an existing usuario cuyo editing', () => {
+    it('debe actualizar un usuario existente cuando se está editando', () => {
       const svc = TestBed.inject(UsuarioService);
       const toast = TestBed.inject(ToastService);
       const actualizarSpy = spyOn(svc, 'actualizarUsuario').and.returnValue(of(usuarios[0]));
@@ -192,7 +192,7 @@ describe('MantenimientoUsuarios', () => {
       expect(toastSpy).toHaveBeenCalledWith('Usuario actualizado.', 'success');
     });
 
-    it('debe mostrar the backend error message cuyo registering fails', () => {
+    it('debe mostrar el mensaje de error del backend cuando el registro falla', () => {
       const svc = TestBed.inject(UsuarioService);
       const toast = TestBed.inject(ToastService);
       spyOn(svc, 'registrarUsuario').and.returnValue(
@@ -219,14 +219,14 @@ describe('MantenimientoUsuarios', () => {
   describe('eliminar()', () => {
     beforeEach(() => component.ngOnInit());
 
-    it('confirmarEliminar() should open the confirmation dialog', () => {
+    it('confirmarEliminar() debe abrir el diálogo de confirmación', () => {
       component.confirmarEliminar(usuarios[0]);
 
       expect(component.usuarioToDelete).toEqual(usuarios[0]);
       expect(component.showDeleteConfirm).toBeTrue();
     });
 
-    it('cancelarEliminar() should close the dialog without deleting', () => {
+    it('cancelarEliminar() debe cerrar el diálogo sin eliminar', () => {
       const svc = TestBed.inject(UsuarioService);
       const eliminarSpy = spyOn(svc, 'eliminarUsuario');
       component.confirmarEliminar(usuarios[0]);
@@ -238,7 +238,7 @@ describe('MantenimientoUsuarios', () => {
       expect(eliminarSpy).not.toHaveBeenCalled();
     });
 
-    it('eliminar() debe eliminar the selected usuario, show a toast y reload', () => {
+    it('eliminar() debe eliminar el usuario seleccionado, mostrar un toast y recargar', () => {
       const svc = TestBed.inject(UsuarioService);
       const toast = TestBed.inject(ToastService);
       const eliminarSpy = spyOn(svc, 'eliminarUsuario').and.returnValue(of(undefined));
@@ -253,7 +253,7 @@ describe('MantenimientoUsuarios', () => {
       expect(component.showDeleteConfirm).toBeFalse();
     });
 
-    it('eliminar() should do nothing cuyo there is no usuario selected', () => {
+    it('eliminar() no debe hacer nada cuando no hay usuario seleccionado', () => {
       const svc = TestBed.inject(UsuarioService);
       const eliminarSpy = spyOn(svc, 'eliminarUsuario');
 
@@ -263,7 +263,7 @@ describe('MantenimientoUsuarios', () => {
       expect(eliminarSpy).not.toHaveBeenCalled();
     });
 
-    it('eliminar() debe mostrar a toast on error', () => {
+    it('eliminar() debe mostrar un toast en caso de error', () => {
       const svc = TestBed.inject(UsuarioService);
       const toast = TestBed.inject(ToastService);
       spyOn(svc, 'eliminarUsuario').and.returnValue(throwError(() => new Error('fail')));
@@ -277,12 +277,12 @@ describe('MantenimientoUsuarios', () => {
   });
 
   describe('getPerfilDescripcion()', () => {
-    it('debe retornar the role description for a known idPerfil', () => {
+    it('debe retornar la descripción del rol para un idPerfil conocido', () => {
       expect(component.getPerfilDescripcion(1)).toBe('Jefe');
       expect(component.getPerfilDescripcion(2)).toBe('Técnico');
     });
 
-    it('debe retornar a dash for an unknown idPerfil', () => {
+    it('debe retornar un guion para un idPerfil desconocido', () => {
       expect(component.getPerfilDescripcion(99)).toBe('—');
     });
   });

@@ -35,7 +35,7 @@ describe('Dashboard', () => {
     expect(component).toBeTruthy();
   });
 
-  it('ngOnInit() should load the user y build the menu for a JEFE', () => {
+  it('ngOnInit() debe cargar el usuario y construir el menú para un JEFE', () => {
     const sessionService = TestBed.inject(SessionService);
     spyOn(sessionService, 'getInfoSession').and.returnValue(usuarioJefe);
 
@@ -46,7 +46,7 @@ describe('Dashboard', () => {
     expect(component.menuItems.some((m) => m.label === 'Mantenimiento')).toBeTrue();
   });
 
-  it('ngOnInit() should hide the Mantenimiento menu item for a TECNICO', () => {
+  it('ngOnInit() debe ocultar el ítem de menú Mantenimiento para un TECNICO', () => {
     const sessionService = TestBed.inject(SessionService);
     spyOn(sessionService, 'getInfoSession').and.returnValue({
       ...usuarioJefe,
@@ -59,7 +59,7 @@ describe('Dashboard', () => {
     expect(component.menuItems.length).toBe(4);
   });
 
-  it('ngOnInit() should build an empty menu cuyo there is no session', () => {
+  it('ngOnInit() debe construir un menú vacío cuando no hay sesión', () => {
     const sessionService = TestBed.inject(SessionService);
     spyOn(sessionService, 'getInfoSession').and.returnValue(null);
 
@@ -69,11 +69,11 @@ describe('Dashboard', () => {
     expect(component.menuItems).toEqual([]);
   });
 
-  it('userName getter should fall back to "Usuario" when there is no user', () => {
+  it('el getter userName debe usar "Usuario" como valor por defecto cuando no hay usuario', () => {
     expect(component.userName).toBe('Usuario');
   });
 
-  it('userName getter debe retornar the user names cuyo available', () => {
+  it('el getter userName debe retornar el nombre del usuario cuando está disponible', () => {
     const sessionService = TestBed.inject(SessionService);
     spyOn(sessionService, 'getInfoSession').and.returnValue(usuarioJefe);
     component.ngOnInit();
@@ -81,7 +81,7 @@ describe('Dashboard', () => {
     expect(component.userName).toBe('Ana Jefa');
   });
 
-  it('perfilLabel getter debe retornar the role description', () => {
+  it('el getter perfilLabel debe retornar la descripción del rol', () => {
     const sessionService = TestBed.inject(SessionService);
     spyOn(sessionService, 'getInfoSession').and.returnValue(usuarioJefe);
     component.ngOnInit();
@@ -89,7 +89,7 @@ describe('Dashboard', () => {
     expect(component.perfilLabel).toBe('Jefe');
   });
 
-  it('logout() debe llamar AuthService.logout(), show a toast y navigate to /login', () => {
+  it('logout() debe llamar AuthService.logout(), mostrar un toast y navegar a /login', () => {
     const authService = TestBed.inject(AuthService);
     const toastService = TestBed.inject(ToastService);
     const router = TestBed.inject(Router);

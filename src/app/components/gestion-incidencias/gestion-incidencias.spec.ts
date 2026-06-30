@@ -35,7 +35,7 @@ describe('GestionIncidencias', () => {
   });
 
   describe('cargar()', () => {
-    it('debe llamar getAll() for non technical roles', () => {
+    it('debe llamar getAll() para roles no técnicos', () => {
       const svc = TestBed.inject(IncidenciaService);
       const sessionService = TestBed.inject(SessionService);
       spyOn(sessionService, 'getInfoSession').and.returnValue({
@@ -54,7 +54,7 @@ describe('GestionIncidencias', () => {
       expect(component.isLoading).toBeFalse();
     });
 
-    it('debe llamar getPorTecnico() for the TECNICO role', () => {
+    it('debe llamar getPorTecnico() para el rol TECNICO', () => {
       const svc = TestBed.inject(IncidenciaService);
       const sessionService = TestBed.inject(SessionService);
       spyOn(sessionService, 'getInfoSession').and.returnValue({
@@ -69,7 +69,7 @@ describe('GestionIncidencias', () => {
       expect(getPorTecnicoSpy).toHaveBeenCalledWith(7);
     });
 
-    it('debe mostrar a toast on error', () => {
+    it('debe mostrar un toast en caso de error', () => {
       const svc = TestBed.inject(IncidenciaService);
       const toast = TestBed.inject(ToastService);
       spyOn(svc, 'getAll').and.returnValue(throwError(() => new Error('fail')));
@@ -85,19 +85,19 @@ describe('GestionIncidencias', () => {
   describe('incidenciasFiltradas', () => {
     beforeEach(() => (component.incidencias = incidencias));
 
-    it('debe retornar all incidencias cuyo the filter is TODAS', () => {
+    it('debe retornar todas las incidencias cuando el filtro es TODAS', () => {
       component.filtroEstado = 'TODAS';
       expect(component.incidenciasFiltradas).toEqual(incidencias);
     });
 
-    it('debe filtrar by estado', () => {
+    it('debe filtrar por estado', () => {
       component.filtroEstado = 'Pendiente';
       expect(component.incidenciasFiltradas).toEqual([incidencias[0]]);
     });
   });
 
   describe('guardarCrear()', () => {
-    it('should collect validation errors y not call the service cuyo the form is incomplete', () => {
+    it('debe recolectar errores de validación y no llamar al servicio cuando el formulario está incompleto', () => {
       const svc = TestBed.inject(IncidenciaService);
       const crearSpy = spyOn(svc, 'crear');
 
@@ -108,21 +108,21 @@ describe('GestionIncidencias', () => {
       expect(crearSpy).not.toHaveBeenCalled();
     });
 
-    it('should require at least 10 characters in the description', () => {
+    it('debe requerir al menos 10 caracteres en la descripción', () => {
       component.nuevaIncidencia = { codigoEquipo: 'PC-001', descripcionProblema: 'corta' };
       component.guardarCrear();
 
       expect(component.erroresCrear).toContain('La descripción debe tener al menos 10 caracteres.');
     });
 
-    it('should reject descriptions longer than 500 characters', () => {
+    it('debe rechazar descripciones de más de 500 caracteres', () => {
       component.nuevaIncidencia = { codigoEquipo: 'PC-001', descripcionProblema: 'a'.repeat(501) };
       component.guardarCrear();
 
       expect(component.erroresCrear).toContain('La descripción no puede superar los 500 caracteres.');
     });
 
-    it('debe crear el componente the incidencia, show a toast, close the modal y reload', () => {
+    it('debe crear la incidencia, mostrar un toast, cerrar el modal y recargar', () => {
       const svc = TestBed.inject(IncidenciaService);
       const sessionService = TestBed.inject(SessionService);
       const toast = TestBed.inject(ToastService);
@@ -142,7 +142,7 @@ describe('GestionIncidencias', () => {
       expect(component.showCrearModal).toBeFalse();
     });
 
-    it('should map backend validation errors from err.error.campos', () => {
+    it('debe mapear los errores de validación del backend desde err.error.campos', () => {
       const svc = TestBed.inject(IncidenciaService);
       spyOn(svc, 'crear').and.returnValue(
         throwError(() => ({ error: { campos: { codigoEquipo: 'Equipo invalido' } } }))
@@ -160,7 +160,7 @@ describe('GestionIncidencias', () => {
       { idUsuario: 7, nombre: 'Luis', especialidad: 'HW', disponibilidad: true, maxIncidencias: 5 },
     ];
 
-    it('abrirAsignar() should load the available technicians y open the modal', () => {
+    it('abrirAsignar() debe cargar los técnicos disponibles y abrir el modal', () => {
       const tecnicoSvc = TestBed.inject(TecnicoService);
       spyOn(tecnicoSvc, 'getDisponibles').and.returnValue(of(tecnicos));
 
@@ -171,7 +171,7 @@ describe('GestionIncidencias', () => {
       expect(component.showAsignarModal).toBeTrue();
     });
 
-    it('confirmarAsignar() should warn cuyo no technician is selected', () => {
+    it('confirmarAsignar() debe advertir cuando no se selecciona ningún técnico', () => {
       const svc = TestBed.inject(IncidenciaService);
       const toast = TestBed.inject(ToastService);
       const asignarSpy = spyOn(svc, 'asignar');
@@ -185,7 +185,7 @@ describe('GestionIncidencias', () => {
       expect(toastSpy).toHaveBeenCalledWith('Selecciona un tecnico.', 'warning');
     });
 
-    it('confirmarAsignar() should assign the technician, show a toast y reload', () => {
+    it('confirmarAsignar() debe asignar al técnico, mostrar un toast y recargar', () => {
       const svc = TestBed.inject(IncidenciaService);
       const toast = TestBed.inject(ToastService);
       const asignarSpy = spyOn(svc, 'asignar').and.returnValue(of(incidencias[0]));
@@ -203,7 +203,7 @@ describe('GestionIncidencias', () => {
   });
 
   describe('solucionar()', () => {
-    it('confirmarSolucionar() should warn cuyo no solution text was provided', () => {
+    it('confirmarSolucionar() debe advertir cuando no se proporcionó texto de solución', () => {
       const svc = TestBed.inject(IncidenciaService);
       const solucionarSpy = spyOn(svc, 'solucionar');
 
@@ -214,7 +214,7 @@ describe('GestionIncidencias', () => {
       expect(solucionarSpy).not.toHaveBeenCalled();
     });
 
-    it('confirmarSolucionar() debe marcar the incidencia as solved y reload', () => {
+    it('confirmarSolucionar() debe marcar la incidencia como solucionada y recargar', () => {
       const svc = TestBed.inject(IncidenciaService);
       const toast = TestBed.inject(ToastService);
       const solucionarSpy = spyOn(svc, 'solucionar').and.returnValue(of(incidencias[0]));
@@ -232,13 +232,13 @@ describe('GestionIncidencias', () => {
   });
 
   describe('helpers', () => {
-    it('getEstadoClass() should map known states', () => {
+    it('getEstadoClass() debe mapear estados conocidos', () => {
       expect(component.getEstadoClass('Pendiente')).toBe('badge--warn');
       expect(component.getEstadoClass('Solucionado')).toBe('badge--success');
       expect(component.getEstadoClass('Otro')).toBe('badge--info');
     });
 
-    it('esTecnico / esJefe getters should reflect rolCodigo', () => {
+    it('los getters esTecnico / esJefe deben reflejar rolCodigo', () => {
       component.rolCodigo = 'TECNICO';
       expect(component.esTecnico).toBeTrue();
       expect(component.esJefe).toBeFalse();

@@ -35,7 +35,7 @@ describe('GestionRepuestos', () => {
   });
 
   describe('cargar()', () => {
-    it('debe cargar the repuestos y set isLoading to false on success', () => {
+    it('debe cargar los repuestos y poner isLoading en falso al tener éxito', () => {
       const svc = TestBed.inject(RepuestoService);
       spyOn(svc, 'getAll').and.returnValue(of(repuestos));
 
@@ -45,7 +45,7 @@ describe('GestionRepuestos', () => {
       expect(component.isLoading).toBeFalse();
     });
 
-    it('debe mostrar a toast on error', () => {
+    it('debe mostrar un toast en caso de error', () => {
       const svc = TestBed.inject(RepuestoService);
       const toast = TestBed.inject(ToastService);
       spyOn(svc, 'getAll').and.returnValue(throwError(() => new Error('fail')));
@@ -58,7 +58,7 @@ describe('GestionRepuestos', () => {
   });
 
   describe('cargarIncidencias()', () => {
-    it('should only keep pending incidencias assigned to the current technician', () => {
+    it('debe conservar solo las incidencias pendientes asignadas al técnico actual', () => {
       const incidenciaSvc = TestBed.inject(IncidenciaService);
       const sessionService = TestBed.inject(SessionService);
       spyOn(sessionService, 'getInfoSession').and.returnValue({
@@ -80,25 +80,25 @@ describe('GestionRepuestos', () => {
   describe('repuestosFiltrados', () => {
     beforeEach(() => (component.repuestos = repuestos));
 
-    it('debe retornar all repuestos cuyo the filter is TODOS', () => {
+    it('debe retornar todos los repuestos cuando el filtro es TODOS', () => {
       component.filtroEstado = 'TODOS';
       expect(component.repuestosFiltrados).toEqual(repuestos);
     });
 
-    it('debe filtrar by estado', () => {
+    it('debe filtrar por estado', () => {
       component.filtroEstado = 'Entregado';
       expect(component.repuestosFiltrados).toEqual([repuestos[1]]);
     });
   });
 
   describe('cantidad', () => {
-    it('incrementarCantidad() should increase the cantidad', () => {
+    it('incrementarCantidad() debe aumentar la cantidad', () => {
       component.formSolicitar.cantidad = 1;
       component.incrementarCantidad();
       expect(component.formSolicitar.cantidad).toBe(2);
     });
 
-    it('decrementarCantidad() should not go below 1', () => {
+    it('decrementarCantidad() no debe bajar de 1', () => {
       component.formSolicitar.cantidad = 1;
       component.decrementarCantidad();
       expect(component.formSolicitar.cantidad).toBe(1);
@@ -106,7 +106,7 @@ describe('GestionRepuestos', () => {
   });
 
   describe('guardarSolicitar()', () => {
-    it('should collect validation errors cuyo the form is incomplete', () => {
+    it('debe recolectar errores de validación cuando el formulario está incompleto', () => {
       const svc = TestBed.inject(RepuestoService);
       const solicitarSpy = spyOn(svc, 'solicitar');
 
@@ -117,14 +117,14 @@ describe('GestionRepuestos', () => {
       expect(solicitarSpy).not.toHaveBeenCalled();
     });
 
-    it('should require a minimum description length of 5 characters', () => {
+    it('debe requerir una longitud mínima de descripción de 5 caracteres', () => {
       component.formSolicitar = { idIncidencia: 1, descripcion: 'ab', cantidad: 1, urgencia: 'estandar' };
       component.guardarSolicitar();
 
       expect(component.erroresSolicitar).toContain('La descripción debe tener al menos 5 caracteres.');
     });
 
-    it('should request the repuesto, show a success toast, close the modal y reload', () => {
+    it('debe solicitar el repuesto, mostrar un toast de éxito, cerrar el modal y recargar', () => {
       const svc = TestBed.inject(RepuestoService);
       const toast = TestBed.inject(ToastService);
       const solicitarSpy = spyOn(svc, 'solicitar').and.returnValue(of(repuestos[0]));
@@ -139,7 +139,7 @@ describe('GestionRepuestos', () => {
       expect(component.showSolicitarModal).toBeFalse();
     });
 
-    it('should map backend validation errors from err.error.campos', () => {
+    it('debe mapear los errores de validación del backend desde err.error.campos', () => {
       const svc = TestBed.inject(RepuestoService);
       spyOn(svc, 'solicitar').and.returnValue(
         throwError(() => ({ error: { campos: { descripcion: 'Descripcion invalida' } } }))
@@ -153,7 +153,7 @@ describe('GestionRepuestos', () => {
   });
 
   describe('entregar()', () => {
-    it('no debe llamar the service cuyo the user cancels the confirmation', () => {
+    it('no debe llamar al servicio cuando el usuario cancela la confirmación', () => {
       const svc = TestBed.inject(RepuestoService);
       const entregarSpy = spyOn(svc, 'entregar');
       spyOn(window, 'confirm').and.returnValue(false);
@@ -163,7 +163,7 @@ describe('GestionRepuestos', () => {
       expect(entregarSpy).not.toHaveBeenCalled();
     });
 
-    it('debe marcar the repuesto as delivered, show a toast y reload cuyo confirmed', () => {
+    it('debe marcar el repuesto como entregado, mostrar un toast y recargar cuando se confirma', () => {
       const svc = TestBed.inject(RepuestoService);
       const toast = TestBed.inject(ToastService);
       spyOn(window, 'confirm').and.returnValue(true);
@@ -178,8 +178,8 @@ describe('GestionRepuestos', () => {
     });
   });
 
-  describe('role getters', () => {
-    it('should reflect rolCodigo correctly', () => {
+  describe('getters de rol', () => {
+    it('debe reflejar correctamente rolCodigo', () => {
       component.rolCodigo = 'TECNICO';
       expect(component.esTecnico).toBeTrue();
       expect(component.esSistemas).toBeFalse();

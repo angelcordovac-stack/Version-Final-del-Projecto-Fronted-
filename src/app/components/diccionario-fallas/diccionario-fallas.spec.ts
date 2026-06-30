@@ -32,7 +32,7 @@ describe('DiccionarioFallas', () => {
   });
 
   describe('cargar()', () => {
-    it('debe cargar the fallas y set isLoading to false on success', () => {
+    it('debe cargar las fallas y poner isLoading en falso al tener éxito', () => {
       const svc = TestBed.inject(DiccionarioFallasService);
       spyOn(svc, 'getAll').and.returnValue(of(fallas));
 
@@ -42,7 +42,7 @@ describe('DiccionarioFallas', () => {
       expect(component.isLoading).toBeFalse();
     });
 
-    it('debe mostrar a toast y set isLoading to false on error', () => {
+    it('debe mostrar un toast y poner isLoading en falso en caso de error', () => {
       const svc = TestBed.inject(DiccionarioFallasService);
       const toast = TestBed.inject(ToastService);
       spyOn(svc, 'getAll').and.returnValue(throwError(() => new Error('fail')));
@@ -60,29 +60,29 @@ describe('DiccionarioFallas', () => {
       component.fallas = fallas;
     });
 
-    it('debe retornar all fallas cuyo there is no search term', () => {
+    it('debe retornar todas las fallas cuando no hay término de búsqueda', () => {
       component.busqueda = '';
       expect(component.fallasFiltradas).toEqual(fallas);
     });
 
-    it('debe filtrar by problemaComun (case insensitive)', () => {
+    it('debe filtrar por problemaComun (sin distinguir mayúsculas/minúsculas)', () => {
       component.busqueda = 'PANTALLA';
       expect(component.fallasFiltradas).toEqual([fallas[0]]);
     });
 
-    it('debe filtrar by solucionSugerida', () => {
+    it('debe filtrar por solucionSugerida', () => {
       component.busqueda = 'router';
       expect(component.fallasFiltradas).toEqual([fallas[1]]);
     });
 
-    it('debe filtrar by the estado label', () => {
+    it('debe filtrar por la etiqueta de estado', () => {
       component.busqueda = 'crítico';
       expect(component.fallasFiltradas).toEqual([fallas[1]]);
     });
   });
 
   describe('modal de nueva falla', () => {
-    it('abrirNueva() debe restablecer the form y open the modal', () => {
+    it('abrirNueva() debe restablecer el formulario y abrir el modal', () => {
       component.formData = { problemaComun: 'algo', solucionSugerida: 'algo', estado: 'RESUELTO' };
       component.abrirNueva();
 
@@ -91,7 +91,7 @@ describe('DiccionarioFallas', () => {
       expect(component.formData.solucionSugerida).toBe('');
     });
 
-    it('cerrarModal() should close the modal', () => {
+    it('cerrarModal() debe cerrar el modal', () => {
       component.showModal = true;
       component.guardando = true;
 
@@ -103,7 +103,7 @@ describe('DiccionarioFallas', () => {
   });
 
   describe('guardar()', () => {
-    it('should warn y not call the service cuyo problemaComun is empty', () => {
+    it('debe advertir y no llamar al servicio cuando problemaComun está vacío', () => {
       const svc = TestBed.inject(DiccionarioFallasService);
       const registrarSpy = spyOn(svc, 'registrar');
 
@@ -114,7 +114,7 @@ describe('DiccionarioFallas', () => {
       expect(component.erroresForm.length).toBeGreaterThan(0);
     });
 
-    it('should warn y not call the service cuyo estado is missing', () => {
+    it('debe advertir y no llamar al servicio cuando falta el estado', () => {
       const svc = TestBed.inject(DiccionarioFallasService);
       const registrarSpy = spyOn(svc, 'registrar');
 
@@ -124,7 +124,7 @@ describe('DiccionarioFallas', () => {
       expect(registrarSpy).not.toHaveBeenCalled();
     });
 
-    it('should register the falla, show a success toast, close the modal y reload', () => {
+    it('debe registrar la falla, mostrar un toast de éxito, cerrar el modal y recargar', () => {
       const svc = TestBed.inject(DiccionarioFallasService);
       const sessionService = TestBed.inject(SessionService);
       const toast = TestBed.inject(ToastService);
@@ -145,7 +145,7 @@ describe('DiccionarioFallas', () => {
       expect(component.guardando).toBeFalse();
     });
 
-    it('debe mostrar the backend error message y stop saving on error', () => {
+    it('debe mostrar el mensaje de error del backend y detener el guardado en caso de error', () => {
       const svc = TestBed.inject(DiccionarioFallasService);
       const sessionService = TestBed.inject(SessionService);
       const toast = TestBed.inject(ToastService);
@@ -162,7 +162,7 @@ describe('DiccionarioFallas', () => {
       expect(component.guardando).toBeFalse();
     });
 
-    it('no debe llamar the service twice while a save is already in progress', () => {
+    it('no debe llamar al servicio dos veces mientras un guardado ya está en curso', () => {
       const svc = TestBed.inject(DiccionarioFallasService);
       const registrarSpy = spyOn(svc, 'registrar');
       component.guardando = true;
@@ -175,7 +175,7 @@ describe('DiccionarioFallas', () => {
   });
 
   describe('helpers de presentación', () => {
-    it('puedeAgregar should be true for TECNICO y SISTEMAS', () => {
+    it('puedeAgregar debe ser verdadero para TECNICO y SISTEMAS', () => {
       component.rolCodigo = 'TECNICO';
       expect(component.puedeAgregar).toBeTrue();
       component.rolCodigo = 'SISTEMAS';
@@ -184,27 +184,27 @@ describe('DiccionarioFallas', () => {
       expect(component.puedeAgregar).toBeFalse();
     });
 
-    it('estadoLabel() should map known states y fall back for unknown ones', () => {
+    it('estadoLabel() debe mapear estados conocidos y usar un valor por defecto para los desconocidos', () => {
       expect(component.estadoLabel('CRITICO')).toBe('Crítico');
       expect(component.estadoLabel('RESUELTO')).toBe('Resuelto');
       expect(component.estadoLabel(undefined)).toBe('Sin estado');
     });
 
-    it('estadoClass() y cardAccentClass() should map known states', () => {
+    it('estadoClass() y cardAccentClass() deben mapear estados conocidos', () => {
       expect(component.estadoClass('CRITICO')).toBe('dic__badge--red');
       expect(component.estadoClass('RESUELTO')).toBe('dic__badge--green');
       expect(component.cardAccentClass('MANTENIMIENTO')).toBe('dic__card--accent-yellow');
       expect(component.cardAccentClass(undefined)).toBe('dic__card--accent-blue');
     });
 
-    it('indiceReal() debe retornar the position of the falla in the unfiltered list', () => {
+    it('indiceReal() debe retornar la posición de la falla en la lista sin filtrar', () => {
       component.fallas = fallas;
       expect(component.indiceReal(fallas[1])).toBe(1);
     });
   });
 
   describe('detalle', () => {
-    it('abrirDetalle() / cerrarDetalle() should toggle the selected falla', () => {
+    it('abrirDetalle() / cerrarDetalle() deben alternar la falla seleccionada', () => {
       component.abrirDetalle(fallas[0]);
       expect(component.showDetalle).toBeTrue();
       expect(component.fallaSeleccionada).toEqual(fallas[0]);

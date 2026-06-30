@@ -26,7 +26,7 @@ describe('InicioDash', () => {
     expect(component).toBeTruthy();
   });
 
-  it('ngOnInit() should compute totals, pendientes y solucionadas from the incidencias', () => {
+  it('ngOnInit() debe calcular los totales, pendientes y solucionadas a partir de las incidencias', () => {
     const incidenciaService = TestBed.inject(IncidenciaService);
     const sessionService = TestBed.inject(SessionService);
     spyOn(sessionService, 'getInfoSession').and.returnValue({
@@ -47,7 +47,7 @@ describe('InicioDash', () => {
     expect(component.rolCodigo).toBe('JEFE');
   });
 
-  it('ngOnInit() debe manejar an empty list of incidencias', () => {
+  it('ngOnInit() debe manejar una lista vacía de incidencias', () => {
     const incidenciaService = TestBed.inject(IncidenciaService);
     const sessionService = TestBed.inject(SessionService);
     spyOn(sessionService, 'getInfoSession').and.returnValue(null);
@@ -61,7 +61,7 @@ describe('InicioDash', () => {
     expect(component.rolCodigo).toBe('');
   });
 
-  it('role getters debe permitir access for JEFE, TECNICO y SISTEMAS', () => {
+  it('los getters de rol deben permitir acceso para JEFE, TECNICO y SISTEMAS', () => {
     component.rolCodigo = 'TECNICO';
     expect(component.puedeIncidencias).toBeTrue();
     expect(component.puedeRepuestos).toBeTrue();
@@ -69,7 +69,7 @@ describe('InicioDash', () => {
     expect(component.esJefe).toBeFalse();
   });
 
-  it('esJefe getter should only be true for JEFE', () => {
+  it('el getter esJefe solo debe ser verdadero para JEFE', () => {
     component.rolCodigo = 'JEFE';
     expect(component.esJefe).toBeTrue();
   });
