@@ -1,0 +1,217 @@
+// ─── CONTENEDOR ─────────────────────────────────────────────────────────────
+.traz {
+  padding: 0;
+  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+}
+
+// ─── HEADER ─────────────────────────────────────────────────────────────────
+.traz__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 1.75rem;
+  flex-wrap: wrap;
+  gap: 1.25rem;
+}
+
+.traz__title {
+  font-size: 2.4rem;
+  font-weight: 800;
+  color: #0f172a;
+  margin: 0 0 0.5rem;
+  line-height: 1.1;
+  letter-spacing: -1px;
+}
+
+.traz__subtitle {
+  color: #64748b;
+  font-size: 0.9rem;
+  margin: 0;
+  max-width: 500px;
+  line-height: 1.5;
+}
+
+.traz__header-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-shrink: 0;
+}
+
+.traz__search {
+  padding: 0.5rem 0.9rem;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  width: 260px;
+  outline: none;
+  transition: border-color 0.15s;
+  &:focus { border-color: #6366f1; }
+}
+
+.traz__back {
+  margin-bottom: 0.25rem;
+}
+
+// ─── KPIs ────────────────────────────────────────────────────────────────────
+.traz__kpis {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+
+  @media (max-width: 768px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.traz__kpi {
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 1.1rem 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+
+  &--warn    { border-left: 4px solid #f59e0b; }
+  &--success { border-left: 4px solid #10b981; }
+  &--danger  { border-left: 4px solid #ef4444; }
+}
+
+.traz__kpi-value {
+  font-size: 2rem;
+  font-weight: 800;
+  color: #0f172a;
+  line-height: 1;
+}
+
+.traz__kpi-label {
+  font-size: 0.78rem;
+  color: #64748b;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+// ─── CARD / TABLA ────────────────────────────────────────────────────────────
+.traz__card {
+  background: #fff;
+  border-radius: 16px;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 1px 6px rgba(0,0,0,0.04);
+  overflow: hidden;
+}
+
+.traz__table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.875rem;
+
+  thead tr {
+    background: #f8fafc;
+    border-bottom: 2px solid #e2e8f0;
+  }
+
+  th {
+    padding: 0.85rem 1rem;
+    text-align: left;
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: #64748b;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+
+  td {
+    padding: 0.85rem 1rem;
+    color: #1e293b;
+    border-bottom: 1px solid #f1f5f9;
+    vertical-align: middle;
+  }
+
+  tbody tr {
+    transition: background 0.1s;
+    &:hover { background: #f8fafc; }
+    &:last-child td { border-bottom: none; }
+  }
+}
+
+.traz__code {
+  font-family: 'Courier New', monospace;
+  font-weight: 700;
+  color: #6366f1;
+  white-space: nowrap;
+}
+
+.traz__desc {
+  max-width: 280px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.traz__solucion {
+  max-width: 200px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: #475569;
+  font-size: 0.82rem;
+}
+
+.traz__fecha {
+  white-space: nowrap;
+  color: #64748b;
+  font-size: 0.82rem;
+}
+
+.traz__num {
+  text-align: center;
+  &--bold { font-weight: 700; color: #0f172a; }
+}
+
+.traz__zero {
+  color: #cbd5e1;
+}
+
+.traz__empty {
+  text-align: center;
+  padding: 3rem;
+  color: #94a3b8;
+  font-size: 0.9rem;
+}
+
+.traz__loading {
+  text-align: center;
+  padding: 3rem;
+  color: #94a3b8;
+  font-size: 0.9rem;
+}
+
+// ─── FILTRO TABS (reutiliza .inc__tab) ──────────────────────────────────────
+.traz__filter-tabs {
+  display: flex;
+  gap: 0.25rem;
+}
+
+// ─── RIESGO BADGE ────────────────────────────────────────────────────────────
+.risk-badge {
+  display: inline-block;
+  padding: 0.25rem 0.65rem;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+
+  &.risk--alto  { background: #fee2e2; color: #dc2626; }
+  &.risk--medio { background: #fef3c7; color: #d97706; }
+  &.risk--bajo  { background: #d1fae5; color: #059669; }
+}
+
+// ─── NIVEL RIESGO EN KPI ─────────────────────────────────────────────────────
+.risk--alto  { color: #dc2626; }
+.risk--medio { color: #d97706; }
+.risk--bajo  { color: #059669; }

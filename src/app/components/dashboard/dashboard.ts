@@ -29,11 +29,12 @@ export class Dashboard implements OnInit {
   menuItems: MenuItem[] = [];
 
   private readonly STATIC_MENU: MenuItem[] = [
-    { label: 'Inicio',          icon: '📊', url: '/dashboard',                       roles: ['JEFE', 'TECNICO', 'SISTEMAS'] },
-    { label: 'Incidencias',     icon: '🛠️', url: '/dashboard/GestionIncidencias',    roles: ['JEFE', 'TECNICO', 'SISTEMAS'] },
-    { label: 'Repuestos',       icon: '📦', url: '/dashboard/GestionRepuestos',      roles: ['JEFE', 'TECNICO', 'SISTEMAS'] },
-    { label: 'Diccionario',     icon: '📖', url: '/dashboard/DiccionarioFallas',     roles: ['JEFE', 'TECNICO', 'SISTEMAS'] },
-    { label: 'Mantenimiento',   icon: '🔐', url: '/dashboard/MantenimientoUsuarios', roles: ['JEFE'] },
+    { label: 'Inicio',          icon: '📊', url: '/dashboard',                          roles: ['JEFE', 'TECNICO', 'SISTEMAS'] },
+    { label: 'Incidencias',     icon: '🛠️', url: '/dashboard/GestionIncidencias',       roles: ['JEFE', 'TECNICO', 'SISTEMAS'] },
+    { label: 'Repuestos',       icon: '📦', url: '/dashboard/GestionRepuestos',         roles: ['JEFE', 'TECNICO', 'SISTEMAS'] },
+    { label: 'Diccionario',     icon: '📖', url: '/dashboard/DiccionarioFallas',        roles: ['JEFE', 'TECNICO', 'SISTEMAS'] },
+    { label: 'Trazabilidad',    icon: '🗂️', url: '/dashboard/TrazabilidadEquipos',     roles: ['JEFE', 'SISTEMAS'] },
+    { label: 'Mantenimiento',   icon: '🔐', url: '/dashboard/MantenimientoUsuarios',    roles: ['JEFE'] },
   ];
 
   ngOnInit(): void {

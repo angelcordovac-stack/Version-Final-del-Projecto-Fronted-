@@ -133,17 +133,9 @@
           Incidencia #{{ incidenciaParaAsignar?.idIncidencia }} —
           {{ incidenciaParaAsignar?.codigoEquipo }}
         </p>
-
-        <!-- Error dentro del modal: se muestra sin cerrar la ventana -->
-        <div *ngIf="errorAsignar" class="alert alert--error" style="margin-bottom: 1rem;">
-          ⚠️ {{ errorAsignar }}
-        </div>
-
         <div class="form-group">
           <label>Selecciona un técnico</label>
-          <select [(ngModel)]="tecnicoSeleccionado"
-                  [class.input--error]="errorAsignar && !tecnicoSeleccionado"
-                  (change)="errorAsignar = ''">
+          <select [(ngModel)]="tecnicoSeleccionado">
             <option [ngValue]="null">— Seleccionar —</option>
             <option *ngFor="let t of tecnicos"
                     [ngValue]="t.idUsuario"

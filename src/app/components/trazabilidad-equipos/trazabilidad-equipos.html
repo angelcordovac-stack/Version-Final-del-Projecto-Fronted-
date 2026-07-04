@@ -1,0 +1,198 @@
+<div class="traz">
+
+  <!-- ══════════════════════════════════════════════════════
+       VISTA 1 — TABLA RESUMEN
+  ═══════════════════════════════════════════════════════════ -->
+  <ng-container *ngIf="!equipoSeleccionado">
+
+    <div class="traz__header">
+      <div>
+        <h1 class="traz__title">🗂️ Trazabilidad<br>de Equipos</h1>
+        <p class="traz__subtitle">
+          Historial completo de fallas por equipo. Identifica equipos críticos y patrones de fallo.
+        </p>
+      </div>
+      <div class="traz__header-actions">
+        <input
+          type="text"
+          class="traz__search"
+          [(ngModel)]="filtroBusqueda"
+          placeholder="🔍 Buscar equipo, modelo o área..."
+        />
+        <button class="btn btn--outline btn--sm" (click)="cargarResumen()">↺ Actualizar</button>
+      </div>
+    </div>
+
+    <!-- KPIs -->
+    <div class="traz__kpis" *ngIf="!isLoadingTabla">
+      <div class="traz__kpi">
+        <span class="traz__kpi-value">{{ estadisticas.length }}</span>
+        <span class="traz__kpi-label">Equipos registrados</span>
+      </div>
+      <div class="traz__kpi traz__kpi--warn">
+        <span class="traz__kpi-value">{{ getTotalPendientes() }}</span>
+        <span class="traz__kpi-label">Incidencias pendientes</span>
+      </div>
+      <div class="traz__kpi traz__kpi--success">
+        <span class="traz__kpi-value">{{ getTotalSolucionadas() }}</span>
+        <span class="traz__kpi-label">Incidencias solucionadas</span>
+      </div>
+      <div class="traz__kpi traz__kpi--danger">
+        <span class="traz__kpi-value">{{ getEquiposAltoRiesgo() }}</span>
+        <span class="traz__kpi-label">Equipos alto riesgo</span>
+      </div>
+    </div>
+
+    <div *ngIf="isLoadingTabla" class="traz__loading">Cargando historial de equipos...</div>
+
+    <div *ngIf="!isLoadingTabla" class="traz__card">
+      <table class="traz__table">
+        <thead>
+          <tr>
+            <th>EQUIPO</th>
+            <th>MODELO</th>
+            <th>ÁREA</th>
+            <th>TOTAL</th>
+            <th>PENDIENTES</th>
+            <th>SOLUCIONADAS</th>
+            <th>RIESGO</th>
+            <th>ÚLTIMA FALLA</th>
+            <th>DETALLE</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let e of estadisticasFiltradas">
+            <td class="traz__code">{{ e.codigoEquipo }}</td>
+            <td>{{ e.marcaModelo }}</td>
+            <td>{{ e.areaUbicacion }}</td>
+            <td class="traz__num traz__num--bold">{{ e.totalIncidencias }}</td>
+            <td>
+              <span class="badge badge--warn" *ngIf="e.pendientes > 0">{{ e.pendientes }}</span>
+              <span class="traz__zero" *ngIf="e.pendientes === 0">—</span>
+            </td>
+            <td>
+              <span class="badge badge--success" *ngIf="e.solucionadas > 0">{{ e.solucionadas }}</span>
+              <span class="traz__zero" *ngIf="e.solucionadas === 0">—</span>
+            </td>
+            <td>
+              <span class="risk-badge" [ngClass]="getRiesgoClass(e.totalIncidencias)">
+                {{ getRiesgoLabel(e.totalIncidencias) }}
+              </span>
+            </td>
+            <td class="traz__fecha">
+              {{ e.ultimaFecha ? (e.ultimaFecha | date:'d MMM yy') : '—' }}
+            </td>
+            <td>
+              <button class="btn btn--sm btn--primary" (click)="verHistorial(e.codigoEquipo)">
+                🔍 Ver
+              </button>
+            </td>
+          </tr>
+          <tr *ngIf="estadisticasFiltradas.length === 0">
+            <td colspan="9" class="traz__empty">No se encontraron equipos con ese criterio.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+  </ng-container>
+
+
+  <!-- ══════════════════════════════════════════════════════
+       VISTA 2 — HISTORIAL DETALLADO
+  ═══════════════════════════════════════════════════════════ -->
+  <ng-container *ngIf="equipoSeleccionado">
+
+    <div class="traz__header">
+      <div>
+        <button class="btn btn--outline btn--sm traz__back" (click)="volverResumen()">
+          ← Volver al resumen
+        </button>
+        <h1 class="traz__title" style="margin-top:0.75rem">
+          📋 Historial — {{ equipoSeleccionado }}
+        </h1>
+        <p class="traz__subtitle" *ngIf="equipoInfo">
+          {{ equipoInfo.marcaModelo }} &nbsp;·&nbsp;
+          Área: {{ equipoInfo.areaUbicacion }} &nbsp;·&nbsp;
+          Responsable: {{ equipoInfo.responsable }}
+        </p>
+      </div>
+      <div class="traz__header-actions">
+        <div class="traz__filter-tabs">
+          <button class="inc__tab" [class.inc__tab--active]="filtroEstadoDetalle==='TODAS'"
+                  (click)="filtroEstadoDetalle='TODAS'">Todas</button>
+          <button class="inc__tab" [class.inc__tab--active]="filtroEstadoDetalle==='Pendiente'"
+                  (click)="filtroEstadoDetalle='Pendiente'">Pendientes</button>
+          <button class="inc__tab" [class.inc__tab--active]="filtroEstadoDetalle==='Solucionado'"
+                  (click)="filtroEstadoDetalle='Solucionado'">Solucionadas</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- KPIs del equipo -->
+    <div class="traz__kpis" *ngIf="!isLoadingHistorial">
+      <div class="traz__kpi">
+        <span class="traz__kpi-value">{{ historial.length }}</span>
+        <span class="traz__kpi-label">Total incidencias</span>
+      </div>
+      <div class="traz__kpi traz__kpi--warn">
+        <span class="traz__kpi-value">{{ getCountPendientes() }}</span>
+        <span class="traz__kpi-label">Pendientes</span>
+      </div>
+      <div class="traz__kpi traz__kpi--success">
+        <span class="traz__kpi-value">{{ getCountSolucionadas() }}</span>
+        <span class="traz__kpi-label">Solucionadas</span>
+      </div>
+      <div class="traz__kpi">
+        <span class="traz__kpi-value" [ngClass]="getRiesgoClass(historial.length)" style="font-size:1.1rem">
+          {{ getRiesgoLabel(historial.length) }}
+        </span>
+        <span class="traz__kpi-label">Nivel de riesgo</span>
+      </div>
+    </div>
+
+    <div *ngIf="isLoadingHistorial" class="traz__loading">Cargando historial...</div>
+
+    <div *ngIf="!isLoadingHistorial" class="traz__card">
+      <table class="traz__table">
+        <thead>
+          <tr>
+            <th>CÓDIGO</th>
+            <th>DESCRIPCIÓN DEL PROBLEMA</th>
+            <th>ESTADO</th>
+            <th>REGISTRADO POR</th>
+            <th>FECHA REGISTRO</th>
+            <th>FECHA SOLUCIÓN</th>
+            <th>SOLUCIÓN APLICADA</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let i of historialFiltrado">
+            <td class="traz__code">#INC-{{ i.idIncidencia }}</td>
+            <td class="traz__desc">{{ i.descripcionProblema }}</td>
+            <td>
+              <span class="badge" [ngClass]="getEstadoClass(i.estado || '')">
+                {{ i.estado || '—' }}
+              </span>
+            </td>
+            <td>{{ i.quienRegistra || '—' }}</td>
+            <td class="traz__fecha">{{ i.fechaRegistro | date:'d MMM yy, h:mm a' }}</td>
+            <td class="traz__fecha">
+              {{ i.fechaSolucion ? (i.fechaSolucion | date:'d MMM yy, h:mm a') : '—' }}
+            </td>
+            <td class="traz__solucion">{{ i.tipoSolucion || '—' }}</td>
+          </tr>
+          <tr *ngIf="historialFiltrado.length === 0">
+            <td colspan="7" class="traz__empty">
+              No hay incidencias
+              {{ filtroEstadoDetalle !== 'TODAS' ? 'en estado ' + filtroEstadoDetalle : '' }}
+              para este equipo.
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+  </ng-container>
+
+</div>
