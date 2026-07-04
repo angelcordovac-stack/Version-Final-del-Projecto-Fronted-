@@ -36,6 +36,7 @@ export class GestionIncidencias implements OnInit {
   incidenciaParaAsignar: Incidencia | null = null;
   tecnicos: TecnicoListado[] = [];
   tecnicoSeleccionado: number | null = null;
+  errorAsignar: string = '';
 
   showSolucionarModal = false;
   incidenciaParaSolucionar: Incidencia | null = null;
@@ -133,6 +134,7 @@ export class GestionIncidencias implements OnInit {
   abrirAsignar(inc: Incidencia): void {
     this.incidenciaParaAsignar = inc;
     this.tecnicoSeleccionado = null;
+    this.errorAsignar = '';
     this.tecnicoSvc.getDisponibles().subscribe({
       next: (data) => { this.tecnicos = data ?? []; },
       error: () => this.toast.show('No se pudieron cargar los tecnicos.', 'danger'),
@@ -142,21 +144,24 @@ export class GestionIncidencias implements OnInit {
   cerrarAsignar(): void {
     this.showAsignarModal = false;
     this.incidenciaParaAsignar = null;
+    this.errorAsignar = '';
   }
   confirmarAsignar(): void {
+    this.errorAsignar = '';
+
     if (!this.tecnicoSeleccionado || !this.incidenciaParaAsignar) {
-      this.toast.show('Selecciona un tecnico.', 'warning');
+      this.errorAsignar = 'Debes seleccionar un técnico.';
       return;
     }
     this.svc.asignar(this.incidenciaParaAsignar.idIncidencia, this.tecnicoSeleccionado).subscribe({
       next: () => {
-        this.toast.show('Tecnico asignado correctamente.', 'success');
+        this.toast.show('Técnico asignado correctamente.', 'success');
         this.cerrarAsignar();
         this.cargar();
       },
       error: (err) => {
-        const msg = err?.error?.error ?? 'Error al asignar tecnico.';
-        this.toast.show(msg, 'danger');
+        // Mostrar el error del backend DENTRO del modal, sin cerrarlo
+        this.errorAsignar = err?.error?.error ?? 'Error al asignar técnico.';
       },
     });
   }
