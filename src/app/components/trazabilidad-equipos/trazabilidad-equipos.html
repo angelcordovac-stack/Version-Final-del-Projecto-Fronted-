@@ -162,7 +162,6 @@
             <th>ESTADO</th>
             <th>REGISTRADO POR</th>
             <th>FECHA REGISTRO</th>
-            <th>FECHA SOLUCIÓN</th>
             <th>SOLUCIÓN APLICADA</th>
           </tr>
         </thead>
@@ -177,9 +176,6 @@
             </td>
             <td>{{ i.quienRegistra || '—' }}</td>
             <td class="traz__fecha">{{ i.fechaRegistro | date:'d MMM yy, h:mm a' }}</td>
-            <td class="traz__fecha">
-              {{ i.fechaSolucion ? (i.fechaSolucion | date:'d MMM yy, h:mm a') : '—' }}
-            </td>
             <td class="traz__solucion">{{ i.tipoSolucion || '—' }}</td>
           </tr>
           <tr *ngIf="historialFiltrado.length === 0">
