@@ -15,7 +15,7 @@ export interface Equipo {
 })
 export class EquipoService {
   private http = inject(HttpClient);
-  private baseUrl = `${environment.url}/api/equipos`;
+  private baseUrl = `${environment.url}/equipos`;
 
   getAll(): Observable<Equipo[]> {
     return this.http.get<Equipo[]>(this.baseUrl);

@@ -26,7 +26,7 @@ export const ESTADOS_FALLA: { value: string; label: string }[] = [
 })
 export class DiccionarioFallasService {
   private http = inject(HttpClient);
-  private baseUrl = `${environment.url}/api/fallas`;
+  private baseUrl = `${environment.url}/diccionario-fallas`;
 
   getAll(): Observable<DiccionarioFalla[]> {
     return this.http.get<DiccionarioFalla[]>(this.baseUrl);

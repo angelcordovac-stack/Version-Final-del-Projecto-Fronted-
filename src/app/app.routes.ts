@@ -8,6 +8,7 @@ import { GestionIncidencias } from './components/gestion-incidencias/gestion-inc
 import { GestionRepuestos } from './components/gestion-repuestos/gestion-repuestos';
 import { DiccionarioFallas } from './components/diccionario-fallas/diccionario-fallas';
 import { TrazabilidadEquipos } from './components/trazabilidad-equipos/trazabilidad-equipos';
+import { Reportes } from './components/reportes/reportes';
 
 import { authGuard } from './guards/auth.guard';
 import { roleGuard } from './guards/module.guard';
@@ -46,6 +47,11 @@ export const routes: Routes = [
         path: 'TrazabilidadEquipos',
         component: TrazabilidadEquipos,
         canActivate: [roleGuard(['JEFE', 'SISTEMAS'])],
+      },
+      {
+        path: 'Reportes',
+        component: Reportes,
+        canActivate: [roleGuard(['JEFE', 'TECNICO', 'SISTEMAS'])],
       },
     ],
   },

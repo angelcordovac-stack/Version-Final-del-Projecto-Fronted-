@@ -33,6 +33,7 @@ export class Dashboard implements OnInit {
     { label: 'Incidencias',     icon: '🛠️', url: '/dashboard/GestionIncidencias',       roles: ['JEFE', 'TECNICO', 'SISTEMAS'] },
     { label: 'Repuestos',       icon: '📦', url: '/dashboard/GestionRepuestos',         roles: ['JEFE', 'TECNICO', 'SISTEMAS'] },
     { label: 'Diccionario',     icon: '📖', url: '/dashboard/DiccionarioFallas',        roles: ['JEFE', 'TECNICO', 'SISTEMAS'] },
+    { label: 'Reportes',        icon: '📈', url: '/dashboard/Reportes',                 roles: ['JEFE', 'TECNICO', 'SISTEMAS'] },
     { label: 'Trazabilidad',    icon: '🗂️', url: '/dashboard/TrazabilidadEquipos',     roles: ['JEFE', 'SISTEMAS'] },
     { label: 'Mantenimiento',   icon: '🔐', url: '/dashboard/MantenimientoUsuarios',    roles: ['JEFE'] },
   ];

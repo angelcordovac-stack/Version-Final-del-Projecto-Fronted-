@@ -9,7 +9,7 @@ import { environment } from '../environments/environment';
 describe('RepuestoService', () => {
   let service: RepuestoService;
   let httpMock: HttpTestingController;
-  const baseUrl = `${environment.url}/api/repuestos`;
+  const baseUrl = `${environment.url}/repuestos`;
 
   const repuesto: Repuesto = {
     idRepuesto: 1,

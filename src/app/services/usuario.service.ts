@@ -27,7 +27,7 @@ export interface UsuarioRequest {
 })
 export class UsuarioService {
   private http = inject(HttpClient);
-  private baseUrl = `${environment.url}/mantenimiento/usuarios`;
+  private baseUrl = `${environment.url}/usuarios`;
 
   getUsuarios(): Observable<Usuario[]> {
     return this.http.get<Usuario[]>(this.baseUrl);

@@ -218,6 +218,9 @@ import { SessionService } from '../../services/session.service';
             @if (puedeDiccionario) {
               <a routerLink="/dashboard/DiccionarioFallas" class="dash__quick-btn">📖 Diccionario</a>
             }
+            @if (puedeReportes) {
+              <a routerLink="/dashboard/Reportes" class="dash__quick-btn">📈 Reportes</a>
+            }
           </div>
         </div>
       </div>
@@ -250,4 +253,5 @@ export class InicioDash implements OnInit {
   get puedeIncidencias(): boolean { return this.rolCodigo === 'JEFE' || this.rolCodigo === 'TECNICO' || this.rolCodigo === 'SISTEMAS'; }
   get puedeRepuestos(): boolean { return this.rolCodigo === 'JEFE' || this.rolCodigo === 'TECNICO' || this.rolCodigo === 'SISTEMAS'; }
   get puedeDiccionario(): boolean { return this.rolCodigo === 'JEFE' || this.rolCodigo === 'TECNICO' || this.rolCodigo === 'SISTEMAS'; }
+  get puedeReportes(): boolean { return this.rolCodigo === 'JEFE' || this.rolCodigo === 'TECNICO' || this.rolCodigo === 'SISTEMAS'; }
 }

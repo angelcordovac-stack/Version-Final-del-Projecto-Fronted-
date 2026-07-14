@@ -8,7 +8,7 @@ import { environment } from '../environments/environment';
 describe('DiccionarioFallasService', () => {
   let service: DiccionarioFallasService;
   let httpMock: HttpTestingController;
-  const baseUrl = `${environment.url}/api/fallas`;
+  const baseUrl = `${environment.url}/diccionario-fallas`;
 
   beforeEach(() => {
     TestBed.configureTestingModule({

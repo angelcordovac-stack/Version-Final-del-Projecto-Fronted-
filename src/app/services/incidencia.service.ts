@@ -9,7 +9,7 @@ import { Incidencia } from '../model/incidencia';
 })
 export class IncidenciaService {
   private http = inject(HttpClient);
-  private baseUrl = `${environment.url}/api/incidencias`;
+  private baseUrl = `${environment.url}/incidencias`;
 
   getAll(): Observable<Incidencia[]> {
     return this.http.get<Incidencia[]>(this.baseUrl);

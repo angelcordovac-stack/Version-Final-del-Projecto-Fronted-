@@ -1,0 +1,376 @@
+// ─── CONTENEDOR PRINCIPAL ───────────────────────────────────────────────────
+.rep {
+  padding: 0;
+  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+}
+
+// ─── HEADER ─────────────────────────────────────────────────────────────────
+.rep__header {
+  margin-bottom: 1.5rem;
+}
+
+.rep__title {
+  font-size: 2.6rem;
+  font-weight: 800;
+  color: #0f172a;
+  margin: 0 0 0.5rem;
+  line-height: 1.1;
+  letter-spacing: -1px;
+}
+
+.rep__subtitle {
+  color: #64748b;
+  font-size: 0.9rem;
+  margin: 0;
+  max-width: 560px;
+  line-height: 1.5;
+}
+
+// ─── TABS ───────────────────────────────────────────────────────────────────
+.rep__tabs {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.rep__tab {
+  background: #fff;
+  border: 1.5px solid #e2e8f0;
+  color: #64748b;
+  padding: 0.65rem 1.25rem;
+  border-radius: 10px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.rep__tab:hover { border-color: #94a3b8; color: #334155; }
+.rep__tab--active {
+  background: #1e293b;
+  border-color: #1e293b;
+  color: #fff;
+}
+
+.rep__panel { display: flex; flex-direction: column; gap: 1.5rem; }
+
+.rep__loading {
+  padding: 2rem;
+  text-align: center;
+  color: #94a3b8;
+  font-size: 0.9rem;
+}
+
+.rep__empty {
+  color: #94a3b8;
+  font-size: 0.85rem;
+  margin: 0.25rem 0;
+}
+
+// ─── STAT CARDS (dashboard) ─────────────────────────────────────────────────
+.rep__stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.25rem;
+}
+
+.rep__stat {
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  padding: 1.5rem 1.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
+}
+
+.rep__stat-label {
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: #94a3b8;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+}
+
+.rep__stat-number {
+  font-size: 2.6rem;
+  font-weight: 800;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -1px;
+}
+.rep__stat-number--blue  { color: #1d4ed8; }
+.rep__stat-number--amber { color: #d97706; }
+.rep__stat-number--green { color: #16a34a; }
+
+// ─── CARD GENERICA ──────────────────────────────────────────────────────────
+.rep__card {
+  background: #fff;
+  border-radius: 16px;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 1px 6px rgba(0, 0, 0, 0.04);
+  padding: 1.5rem 1.75rem;
+}
+
+.rep__card-title {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #0f172a;
+  margin: 0 0 1.1rem;
+}
+
+.rep__breakdown-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.25rem;
+}
+
+// ─── BARRAS HORIZONTALES ────────────────────────────────────────────────────
+.rep__bar-row {
+  display: grid;
+  grid-template-columns: 110px 1fr 36px;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.85rem;
+}
+
+.rep__bar-label {
+  font-size: 0.8rem;
+  color: #475569;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.rep__bar-track {
+  background: #f1f5f9;
+  border-radius: 999px;
+  height: 10px;
+  overflow: hidden;
+}
+
+.rep__bar-fill {
+  height: 100%;
+  border-radius: 999px;
+  background: #1d4ed8;
+  transition: width 0.3s;
+}
+.rep__bar-fill--purple { background: #7c3aed; }
+
+.rep__bar-value {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #334155;
+  text-align: right;
+}
+
+// ─── TABLA ──────────────────────────────────────────────────────────────────
+.rep__table {
+  width: 100%;
+  border-collapse: collapse;
+}
+.rep__table thead tr { border-bottom: 1.5px solid #f1f5f9; }
+.rep__table th {
+  text-align: left;
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: #94a3b8;
+  letter-spacing: 0.06em;
+  padding: 0.6rem 0.5rem;
+}
+.rep__table td {
+  padding: 0.85rem 0.5rem;
+  font-size: 0.875rem;
+  color: #334155;
+  border-bottom: 1px solid #f8fafc;
+}
+.rep__table tbody tr:hover { background: #f8fafc; }
+
+.rep__code { font-weight: 700; color: #1e293b; }
+.rep__desc {
+  max-width: 320px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+// ─── FILTRO ─────────────────────────────────────────────────────────────────
+.rep__filter-card { display: flex; flex-direction: column; gap: 1.25rem; }
+
+.rep__filter-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+}
+
+.rep__field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+
+  label {
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: #475569;
+  }
+
+  input, select {
+    padding: 0.6rem 0.75rem;
+    border-radius: 8px;
+    border: 1.5px solid #e2e8f0;
+    font-size: 0.875rem;
+    color: #1e293b;
+    background: #fff;
+
+    &:focus {
+      outline: none;
+      border-color: #1e293b;
+    }
+  }
+}
+
+.rep__filter-actions {
+  display: flex;
+  gap: 0.75rem;
+}
+
+// ─── MODAL DE DETALLE ───────────────────────────────────────────────────────
+.rep__detalle-modal { max-width: 640px; }
+
+.rep__detalle {
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  max-height: 70vh;
+  overflow-y: auto;
+}
+
+.rep__detalle-section {
+  border-bottom: 1px solid #f1f5f9;
+  padding-bottom: 1.1rem;
+
+  &:last-child { border-bottom: none; padding-bottom: 0; }
+
+  h3 {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: #0f172a;
+    margin: 0 0 0.5rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+
+  p {
+    margin: 0.3rem 0;
+    font-size: 0.875rem;
+    color: #334155;
+    line-height: 1.5;
+  }
+}
+
+.rep__detalle-list {
+  margin: 0;
+  padding-left: 1.1rem;
+  font-size: 0.85rem;
+  color: #334155;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+// ─── BADGES (mismo lenguaje visual que el resto de la app) ─────────────────
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.3rem 0.8rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  white-space: nowrap;
+  letter-spacing: 0.01em;
+}
+.badge--warn    { background: #fffbeb; color: #b45309; border: 1.5px solid #fde68a; }
+.badge--info    { background: #eff6ff; color: #1d4ed8; border: 1.5px solid #bfdbfe; }
+.badge--success { background: #f0fdf4; color: #15803d; border: 1.5px solid #bbf7d0; }
+
+// ─── BOTONES ────────────────────────────────────────────────────────────────
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.65rem 1.4rem;
+  border-radius: 10px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  transition: all 0.15s;
+  white-space: nowrap;
+  letter-spacing: 0.01em;
+}
+.btn--primary       { background: #1e293b; color: #fff; }
+.btn--primary:hover { background: #0f172a; }
+.btn--outline       { background: transparent; color: #1e293b; border: 1.5px solid #cbd5e1; }
+.btn--outline:hover { background: #f8fafc; border-color: #94a3b8; }
+.btn--sm { padding: 0.4rem 1rem; font-size: 0.8rem; border-radius: 7px; }
+
+// ─── MODAL OVERLAY (mismo patron que gestion-incidencias) ──────────────────
+.mant-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 99999;
+  padding: 1rem;
+  backdrop-filter: blur(3px);
+}
+
+.mant-modal {
+  background: #fff;
+  border-radius: 18px;
+  width: 100%;
+  max-width: 520px;
+  box-shadow: 0 32px 80px rgba(0, 0, 0, 0.16);
+}
+
+.mant-modal__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.35rem 1.5rem;
+  border-bottom: 1px solid #f1f5f9;
+
+  h2 {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: #0f172a;
+    margin: 0;
+  }
+}
+
+.mant-modal__close {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1rem;
+  color: #94a3b8;
+  padding: 0.3rem 0.5rem;
+  border-radius: 6px;
+  transition: all 0.15s;
+
+  &:hover { color: #475569; background: #f1f5f9; }
+}
+
+// ─── RESPONSIVE ─────────────────────────────────────────────────────────────
+@media (max-width: 900px) {
+  .rep__stats,
+  .rep__breakdown-grid,
+  .rep__filter-grid {
+    grid-template-columns: 1fr;
+  }
+}

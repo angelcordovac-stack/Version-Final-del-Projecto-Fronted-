@@ -9,7 +9,7 @@ import { Repuesto } from '../model/repuesto';
 })
 export class RepuestoService {
   private http = inject(HttpClient);
-  private baseUrl = `${environment.url}/api/repuestos`;
+  private baseUrl = `${environment.url}/repuestos`;
 
   getAll(): Observable<Repuesto[]> {
     return this.http.get<Repuesto[]>(this.baseUrl);

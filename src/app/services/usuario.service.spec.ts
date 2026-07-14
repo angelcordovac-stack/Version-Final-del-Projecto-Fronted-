@@ -8,7 +8,7 @@ import { environment } from '../environments/environment';
 describe('UsuarioService', () => {
   let service: UsuarioService;
   let httpMock: HttpTestingController;
-  const baseUrl = `${environment.url}/mantenimiento/usuarios`;
+  const baseUrl = `${environment.url}/usuarios`;
 
   const usuario: Usuario = {
     idUsuario: 1,

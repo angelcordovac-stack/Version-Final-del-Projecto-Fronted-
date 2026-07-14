@@ -1,0 +1,224 @@
+<div class="rep">
+
+  <!-- HEADER -->
+  <div class="rep__header">
+    <div>
+      <h1 class="rep__title">Monitoreo y<br>Reportes</h1>
+      <p class="rep__subtitle" *ngIf="esJefe">Análisis de rendimiento del sistema, técnicos y estado general de incidencias.</p>
+      <p class="rep__subtitle" *ngIf="!esJefe">Busca y consulta el detalle completo de cualquier incidencia registrada.</p>
+    </div>
+  </div>
+
+  <!-- TABS -->
+  <div class="rep__tabs">
+    <button *ngIf="esJefe" class="rep__tab" [class.rep__tab--active]="tab === 'dashboard'" (click)="cambiarTab('dashboard')">📊 Dashboard</button>
+    <button *ngIf="esJefe" class="rep__tab" [class.rep__tab--active]="tab === 'rendimiento'" (click)="cambiarTab('rendimiento')">🧑‍🔧 Rendimiento de técnicos</button>
+    <button class="rep__tab" [class.rep__tab--active]="tab === 'buscar'" (click)="cambiarTab('buscar')">🔎 Buscar incidencias</button>
+  </div>
+
+  <!-- ============ DASHBOARD ============ -->
+  <div *ngIf="tab === 'dashboard'" class="rep__panel">
+    <div *ngIf="loadingDashboard" class="rep__loading">Cargando panel...</div>
+
+    <ng-container *ngIf="!loadingDashboard && dashboard as d">
+      <div class="rep__stats">
+        <div class="rep__stat">
+          <span class="rep__stat-label">Total incidencias</span>
+          <span class="rep__stat-number rep__stat-number--blue">{{ d.totalIncidencias }}</span>
+        </div>
+        <div class="rep__stat">
+          <span class="rep__stat-label">Pendientes</span>
+          <span class="rep__stat-number rep__stat-number--amber">{{ d.pendientes }}</span>
+        </div>
+        <div class="rep__stat">
+          <span class="rep__stat-label">Solucionadas</span>
+          <span class="rep__stat-number rep__stat-number--green">{{ d.solucionadas }}</span>
+        </div>
+      </div>
+
+      <div class="rep__breakdown-grid">
+        <div class="rep__card">
+          <h3 class="rep__card-title">Por estado</h3>
+          <div class="rep__bar-row" *ngFor="let entry of objectEntries(d.porEstado)">
+            <span class="rep__bar-label">{{ entry[0] }}</span>
+            <div class="rep__bar-track">
+              <div class="rep__bar-fill" [style.width.%]="porcentaje(entry[1], d.totalIncidencias)"></div>
+            </div>
+            <span class="rep__bar-value">{{ entry[1] }}</span>
+          </div>
+          <p *ngIf="objectEntries(d.porEstado).length === 0" class="rep__empty">Sin datos todavía.</p>
+        </div>
+
+        <div class="rep__card">
+          <h3 class="rep__card-title">Por técnico asignado</h3>
+          <div class="rep__bar-row" *ngFor="let entry of objectEntries(d.porTecnico)">
+            <span class="rep__bar-label">{{ nombreTecnico(entry[0]) }}</span>
+            <div class="rep__bar-track">
+              <div class="rep__bar-fill rep__bar-fill--purple" [style.width.%]="porcentaje(entry[1], d.totalIncidencias)"></div>
+            </div>
+            <span class="rep__bar-value">{{ entry[1] }}</span>
+          </div>
+          <p *ngIf="objectEntries(d.porTecnico).length === 0" class="rep__empty">Ninguna incidencia asignada todavía.</p>
+        </div>
+      </div>
+    </ng-container>
+  </div>
+
+  <!-- ============ RENDIMIENTO DE TECNICOS ============ -->
+  <div *ngIf="tab === 'rendimiento'" class="rep__panel">
+    <div *ngIf="loadingRendimiento" class="rep__loading">Cargando rendimiento...</div>
+
+    <div *ngIf="!loadingRendimiento" class="rep__card">
+      <table class="rep__table">
+        <thead>
+          <tr>
+            <th>TÉCNICO</th>
+            <th>ASIGNADAS</th>
+            <th>RESUELTAS</th>
+            <th>PENDIENTES</th>
+            <th>% RESOLUCIÓN</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let t of rendimiento">
+            <td>{{ t.nombreTecnico }}</td>
+            <td>{{ t.totalAsignadas }}</td>
+            <td>{{ t.totalResueltas }}</td>
+            <td>{{ t.totalPendientes }}</td>
+            <td>
+              <span class="badge badge--success" *ngIf="t.totalAsignadas > 0">{{ porcentaje(t.totalResueltas, t.totalAsignadas) }}%</span>
+              <span class="rep__empty" *ngIf="t.totalAsignadas === 0">—</span>
+            </td>
+          </tr>
+          <tr *ngIf="rendimiento.length === 0">
+            <td colspan="5" class="rep__empty">No hay técnicos registrados todavía.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ============ BUSCAR / FILTRO AVANZADO ============ -->
+  <div *ngIf="tab === 'buscar'" class="rep__panel">
+    <div class="rep__card rep__filter-card">
+      <div class="rep__filter-grid">
+        <div class="rep__field">
+          <label>Estado</label>
+          <select [(ngModel)]="filtro.estado">
+            <option value="">Todos</option>
+            <option value="Pendiente">Pendiente</option>
+            <option value="Solucionado">Solucionado</option>
+          </select>
+        </div>
+        <div class="rep__field">
+          <label>Desde</label>
+          <input type="date" [(ngModel)]="filtro.desde" />
+        </div>
+        <div class="rep__field">
+          <label>Hasta</label>
+          <input type="date" [(ngModel)]="filtro.hasta" />
+        </div>
+        <div class="rep__field">
+          <label>Técnico</label>
+          <select [(ngModel)]="filtro.idTecnico">
+            <option [ngValue]="null">Todos</option>
+            <option *ngFor="let t of tecnicos" [ngValue]="t.idUsuario">{{ t.nombre }}</option>
+          </select>
+        </div>
+      </div>
+      <div class="rep__filter-actions">
+        <button class="btn btn--primary" (click)="buscar()">Buscar</button>
+        <button class="btn btn--outline" (click)="limpiarFiltro()">Limpiar</button>
+      </div>
+    </div>
+
+    <div *ngIf="loadingBuscar" class="rep__loading">Buscando...</div>
+
+    <div *ngIf="!loadingBuscar && yaBusco" class="rep__card">
+      <table class="rep__table">
+        <thead>
+          <tr>
+            <th>CÓDIGO</th>
+            <th>EQUIPO</th>
+            <th>PROBLEMA</th>
+            <th>ESTADO</th>
+            <th>FECHA</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let i of resultados">
+            <td class="rep__code">#INC-{{ i.idIncidencia }}</td>
+            <td>{{ i.codigoEquipo || '—' }}</td>
+            <td class="rep__desc">{{ i.descripcionProblema || '—' }}</td>
+            <td><span class="badge" [ngClass]="getEstadoClass(i.estado)">{{ i.estado || '—' }}</span></td>
+            <td>{{ i.fechaRegistro | date:'d MMM yy, h:mm a' }}</td>
+            <td>
+              <button class="btn btn--sm btn--outline" (click)="verDetalle(i.idIncidencia)">Ver detalle</button>
+            </td>
+          </tr>
+          <tr *ngIf="resultados.length === 0">
+            <td colspan="6" class="rep__empty">No se encontraron incidencias con esos filtros.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ============ MODAL DETALLE DE INCIDENCIA ============ -->
+  <div class="mant-modal-overlay" *ngIf="showDetalleModal" (click)="cerrarDetalle()">
+    <div class="mant-modal rep__detalle-modal" (click)="$event.stopPropagation()">
+      <div class="mant-modal__header">
+        <h2>Detalle de incidencia</h2>
+        <button class="mant-modal__close" (click)="cerrarDetalle()">✕</button>
+      </div>
+
+      <div *ngIf="loadingDetalle" class="rep__loading">Cargando detalle...</div>
+
+      <div *ngIf="!loadingDetalle && detalle as det" class="rep__detalle">
+        <div class="rep__detalle-section">
+          <h3>Incidencia #INC-{{ det.incidencia.idIncidencia }}</h3>
+          <p><strong>Descripción:</strong> {{ det.incidencia.descripcionProblema || '—' }}</p>
+          <p><strong>Estado:</strong> <span class="badge" [ngClass]="getEstadoClass(det.incidencia.estado)">{{ det.incidencia.estado }}</span></p>
+          <p><strong>Registrada por:</strong> {{ det.incidencia.quienRegistra || '—' }} el {{ det.incidencia.fechaRegistro | date:'d MMM yy, h:mm a' }}</p>
+          <p *ngIf="det.incidencia.tipoSolucion"><strong>Solución aplicada:</strong> {{ det.incidencia.tipoSolucion }}</p>
+        </div>
+
+        <div class="rep__detalle-section" *ngIf="det.equipo">
+          <h3>Equipo</h3>
+          <p><strong>{{ det.equipo.codigoEquipo }}</strong> — {{ det.equipo.marcaModelo || '—' }}</p>
+          <p>{{ det.equipo.areaUbicacion || '—' }} · Responsable: {{ det.equipo.responsable || '—' }}</p>
+        </div>
+
+        <div class="rep__detalle-section" *ngIf="det.tecnicoAsignado">
+          <h3>Técnico asignado</h3>
+          <p>{{ det.tecnicoAsignado.nombre }} — {{ det.tecnicoAsignado.especialidad || '—' }}</p>
+        </div>
+        <div class="rep__detalle-section" *ngIf="!det.tecnicoAsignado">
+          <h3>Técnico asignado</h3>
+          <p class="rep__empty">Sin asignar todavía.</p>
+        </div>
+
+        <div class="rep__detalle-section">
+          <h3>Repuestos ({{ det.repuestos.length }})</h3>
+          <ul class="rep__detalle-list" *ngIf="det.repuestos.length > 0">
+            <li *ngFor="let r of det.repuestos">{{ r.descripcion }} — <span class="badge" [ngClass]="getEstadoClass(r.estado)">{{ r.estado }}</span></li>
+          </ul>
+          <p *ngIf="det.repuestos.length === 0" class="rep__empty">No se solicitaron repuestos.</p>
+        </div>
+
+        <div class="rep__detalle-section">
+          <h3>Informes técnicos ({{ det.informes.length }})</h3>
+          <ul class="rep__detalle-list" *ngIf="det.informes.length > 0">
+            <li *ngFor="let inf of det.informes">
+              <strong>Diagnóstico:</strong> {{ inf.diagnostico || '—' }}<br>
+              <strong>Procedimiento:</strong> {{ inf.procedimientoRealizado || '—' }}
+            </li>
+          </ul>
+          <p *ngIf="det.informes.length === 0" class="rep__empty">No hay informes registrados.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
