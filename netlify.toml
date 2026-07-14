@@ -1,0 +1,17 @@
+[build]
+  # OJO: debe ser "npm run build" (no "ng build" a secas), porque
+  # "npm run build" ejecuta primero "node set-env.js", que genera
+  # src/app/environments/environment.ts a partir de la variable de
+  # entorno BACKEND_URL configurada en Netlify (Site settings ->
+  # Environment variables). Si se usa "ng build" directo, ese paso
+  # se salta y Angular compila con el environment.ts que haya en el
+  # repo (o falla si no existe, porque ahora está en .gitignore).
+  command = "npm run build"
+  publish = "dist/261dswS3AngularSigconFrontend/browser"
+
+# Angular es una SPA: sin esto, recargar una ruta como /login
+# directamente en el navegador devuelve 404 en vez de servir index.html.
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200

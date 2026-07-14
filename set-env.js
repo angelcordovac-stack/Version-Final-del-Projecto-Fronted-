@@ -7,7 +7,7 @@ const path = require('path');
 
 require('dotenv').config();
 
-const backendUrl = process.env.BACKEND_URL || '';
+const backendUrl = process.env.BACKEND_URL || 'http://localhost:8080';
 
 const environmentContent = `// Este archivo es generado automáticamente por set-env.js — no editar manualmente.
 export const environment = {
